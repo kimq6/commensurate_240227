@@ -19,14 +19,18 @@ ax7 = fig.add_subplot(248, title="2D incommensurate")
 lattice = 2
 cms_lattice = 1.5
 inc_lattice = 1.5
-atom_limit = 400
-create_base_cms = 200  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc)
+atom_limit = 150
+create_base_cms = 100  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc) (네모꼴) (stom_N_inc 보다 크게)
 
+radius_cms = 7  # tip 원 반지름(cms)
+radius_inc = radius_cms  # tip 원 반지름(inc)
+ax_limit = round(radius_inc * 1.2)  # 그래프 확대 (보여주기)
 
-ax_limit = 15  # 그래프 확대 (보여주기)
-radius_cms = 10  # tip 원 반지름(cms) (보여주기)
-radius_inc = 10  # tip 원 반지름(inc) (보여주기)
+atom_N_cms = int(np.trunc(radius_cms / cms_lattice))  # 계산할 원자개수(1D)
+atom_N_inc = int(np.trunc(radius_inc / inc_lattice))
+
+print(f'atom_N_cms = {atom_N_cms}\natom_N_inc = {atom_N_inc}')
 
 for n in range(0,4):
     exec(f'ax{n}.set_xlim(-ax_limit, ax_limit)')
@@ -157,7 +161,7 @@ def distance_3d(cor1, cor2):
 
 
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=7):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=1000000):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -177,7 +181,7 @@ def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):  # cor1, cor2: 
 print(f'1D commensurate', end=" >> ")
 z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
 potential_0_1D_cms = 100000
-for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
+for z_ in np.arange(3.5, 3.7, 0.01):  # 이 범위에서 z반복
     potential_sum = 0
     for tip in tip_base_cms:
         for x_ in atom_base:
@@ -187,94 +191,25 @@ for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
         potential_0_1D_cms = potential_sum
 print(f'z0 = {z_0_1D_cms}')
 
-ax4_x = []
-ax4_y = []
-for atom_n in range(1, len(tip_base_cms) + 1, 1):
-    tip_cms_in = tip_base_cms[0:atom_n]  # 안에 있는 원자들만 고르기
-    potential_sums = []
-    for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
-        potential_sum = 0  # potential 합 초기화
-        for tip in tip_cms_in:  # tip의 좌표들
-            for x_ in atom_base:  # 원자의 좌표들
-                potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_cms))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-        potential_sums.append(potential_sum)
-    difference = max(potential_sums) - min(potential_sums)
-    max_index = np.argmax(potential_sums)
-    min_index = np.argmin(potential_sums)
-    ax4_x.append(atom_n)
-    ax4_y.append(difference)
-    print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
-ax4.plot(ax4_x, ax4_y, linestyle = '--', marker = 'o')
-ax4.set_xticks([round(x, 4) for x in ax4_x])
-ax4.set_yticks(list(set(ax4_y)))
-print(ax4_y)
-for i in ax4_y:
-    print(round(i / ax4_y[0], 3), end=", ")
-print()
-
+atom_N_cms = 2
 # 특정 원자수에서 프로파일 뽑기
-# n = 96
-# z_0_1D_cms = 3.648
-# tip_cms_in = tip_base_cms[0:n]  # 안에 있는 원자들만 고르기
-# print(len(tip_cms_in), tip_cms_in)
-# ax5_x = []
-# potential_sums = []
-# for x_move in np.arange(0, lattice, 0.02):  # 옆으로 조금씩 움직이면서 반복
-#     potential_sum = 0  # potential 합 초기화
-#     for tip in tip_cms_in:  # tip의 좌표들
-#         for x_ in atom_base:  # 원자의 좌표들
-#             potential_sum += potential_2d((x_, 0), (
-#             tip + x_move, z_0_1D_cms))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-#     ax5_x.append(x_move)
-#     potential_sums.append(potential_sum)
-#     print(round(x_move, 4), end='')
-# ax5.plot(ax5_x, potential_sums, linestyle = '-', marker = 'o')
-# print()
-
-# ax5_x = []
-# ax5_y = []
-# for radius in np.arange(1, create_base_inc, inc_lattice):
-#     tip_inc_in = [x for x in tip_base_inc if abs(x) < radius]
-#     # z0 구하기(1D_inc)
-#     z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
-#     potential_min_1D_inc = 100000  # 최소인 potential 합 저장할곳
-#     for z_ in np.arange(3.6, 3.8, 0.001):  # 이 범위에서 z반복
-#         potential_sum = 0  # potential의 합 초기화
-#         for tip in tip_inc_in:  # tip의 좌표들
-#             for x_ in atom_base:  # 원자의 좌표들
-#                 potential_sum += potential_2d((x_, 0), (tip, z_))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-#         # ax4.scatter(z_, potential_sum, c='b', s=1)
-#         if potential_min_1D_inc > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-#             z_0_1D_inc = z_  # z값 저장
-#             potential_min_1D_inc = potential_sum  # potential값 저장
-#     print(f'r = {radius}, 1D incommensurate z0 = {round(z_0_1D_inc, 6)}, potential = {potential_min_1D_inc}')
-#     potential_min_1D_inc_move = 100000
-#     x_move_min = 0
-#     x_move_max = 0
-#     potential_sums = []
-#     for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
-#         potential_sum = 0  # potential 합 초기화
-#         for tip in tip_inc_in:  # tip의 좌표들
-#             for x_ in atom_base:  # 원자의 좌표들
-#                 potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-#         potential_sums.append(potential_sum)
-#     difference = max(potential_sums) - min(potential_sums)
-#     # if potential_min_1D_inc_move > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-#     #     x_potential = x_move  # x값 저장
-#     #     potential_min_1D_inc = potential_sum  # potential값 저장
-#     ax5_x.append(radius - 1)
-#     ax5_y.append(difference)
-#     print(f"max = {max(potential_sums)}, min = {min(potential_sums)}, difference = {difference}")
-#     # ax5.annotate(round(max(potential_sums) - min(potential_sums), 5), (radius, max(potential_sums) - min(potential_sums)))
-# ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o')
-# ax5.set_xticks([round(x, 4) for x in ax5_x])
-# ax5.set_yticks(list(set(ax5_y)))
-# for i in ax5_y:
-#     print(round(i / ax5_y[0], 3))
+tip_cms_in = tip_base_cms[0:atom_N_cms]  # 안에 있는 원자들만 고르기
+tip_cms_in = [1.5, -1.5]
+print(len(tip_cms_in), tip_cms_in)
+ax4_x = []
+potential_sums = []
+for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면서 반복
+    potential_sum = 0.0  # potential 합 초기화
+    for tip in tip_cms_in:  # tip의 좌표들
+        for x_ in atom_base:  # 원자의 좌표들
+            # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
+            potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_cms))
+    ax4_x.append(x_move)
+    potential_sums.append(potential_sum)
+    print(round(x_move, 4), end='')
+ax4.plot(ax4_x, potential_sums, linestyle='-', marker='o')
+print()
 
 fig.tight_layout()
 plt.show()
 
-# 반지름이 짝수일때 포함하도록 (좀 힘듬) (해결??)
-# z를 고정시키는게 아니라 원자와의 간격을 유지시킴
-# 의문) 팁 원자 개수가 늘어나도 z0가 왜 다 똑같이 나올까?
