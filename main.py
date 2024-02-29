@@ -17,11 +17,11 @@ ax7 = fig.add_subplot(248, title="2D incommensurate")
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
+cms_lattice = 1.25
 inc_lattice = 1.5
-atom_limit = 100
-create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 50  # 팁 원자를 얼마나 생성, 계산할지(inc)
+atom_limit = 200
+create_base_cms = 150  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 150  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 
 ax_limit = 15  # 그래프 확대 (보여주기)

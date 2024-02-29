@@ -161,7 +161,7 @@ def distance_3d(cor1, cor2):
 
 
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=1000000):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=5):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -176,6 +176,10 @@ def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):  # cor1, cor2: 
     else:  # 시그마 값 넘는 원자는 potential 0 으로 취급
         return 0
 
+atom_N_cms = 8
+# 특정 원자수에서 프로파일 뽑기
+tip_cms_in = [x + 0.25 for x in tip_base_cms[0:atom_N_cms]]  # 안에 있는 원자들만 고르기
+print(len(tip_cms_in), tip_cms_in)
 
 # 아니 이걸 반복하라고?
 print(f'1D commensurate', end=" >> ")
@@ -183,7 +187,7 @@ z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
 potential_0_1D_cms = 100000
 for z_ in np.arange(3.5, 3.7, 0.01):  # 이 범위에서 z반복
     potential_sum = 0
-    for tip in tip_base_cms:
+    for tip in tip_cms_in:
         for x_ in atom_base:
             potential_sum += potential_2d((x_, 0), (tip, z_))
     if potential_0_1D_cms > potential_sum:
@@ -191,11 +195,6 @@ for z_ in np.arange(3.5, 3.7, 0.01):  # 이 범위에서 z반복
         potential_0_1D_cms = potential_sum
 print(f'z0 = {z_0_1D_cms}')
 
-atom_N_cms = 2
-# 특정 원자수에서 프로파일 뽑기
-tip_cms_in = tip_base_cms[0:atom_N_cms]  # 안에 있는 원자들만 고르기
-tip_cms_in = [1.5, -1.5]
-print(len(tip_cms_in), tip_cms_in)
 ax4_x = []
 potential_sums = []
 for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면서 반복

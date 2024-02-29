@@ -20,8 +20,8 @@ lattice = 2
 cms_lattice = 1.5
 inc_lattice = 1.5
 atom_limit = 100
-create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 50  # 팁 원자를 얼마나 생성, 계산할지(inc)
+create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 30  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 
 ax_limit = 15  # 그래프 확대 (보여주기)
@@ -63,6 +63,7 @@ tip_base_cms.insert(0, 0.0)
 # 팁 원자 베이스(incommensurate)
 tip_base_inc = [x * s for x in np.arange(inc_lattice, create_base_inc, inc_lattice) for s in (1, -1)]
 tip_base_inc.insert(0, 0.0)
+print(tip_base_inc)
 
 # ax0 팁 그리기
 ax0.scatter(tip_base_cms, [0 for x in tip_base_cms], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
@@ -233,8 +234,11 @@ def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):  # cor1, cor2: 
 
 ax5_x = []
 ax5_y = []
-for radius in np.arange(1, create_base_inc, inc_lattice):
-    tip_inc_in = [x for x in tip_base_inc if abs(x) < radius]
+for atom_N in range(1, create_base_inc * 2 + 1):
+    if atom_N // 2 == 0:
+        tip_inc_in = [x + (lattice - inc_lattice) / 2 for x in tip_base_inc[0:atom_N]]
+    else:
+        tip_inc_in = tip_base_inc[0:atom_N]
     # z0 구하기(1D_inc)
     z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
     potential_min_1D_inc = 100000  # 최소인 potential 합 저장할곳
@@ -247,10 +251,11 @@ for radius in np.arange(1, create_base_inc, inc_lattice):
         if potential_min_1D_inc > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
             z_0_1D_inc = z_  # z값 저장
             potential_min_1D_inc = potential_sum  # potential값 저장
-    print(f'r = {radius}, 1D incommensurate z0 = {round(z_0_1D_inc, 6)}, potential = {potential_min_1D_inc}')
-    potential_min_1D_inc_move = 100000
-    x_move_min = 0
-    x_move_max = 0
+    print(f'atom number = {atom_N}, 1D incommensurate z0 = {round(z_0_1D_inc, 6)}, potential = {potential_min_1D_inc}')
+    ax7.scatter(atom_N, z_0_1D_inc, c='b', s=1)
+    # potential_min_1D_inc_move = 100000
+    # x_move_min = 0
+    # x_move_max = 0
     potential_sums = []
     for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
         potential_sum = 0  # potential 합 초기화
@@ -262,7 +267,7 @@ for radius in np.arange(1, create_base_inc, inc_lattice):
     # if potential_min_1D_inc_move > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
     #     x_potential = x_move  # x값 저장
     #     potential_min_1D_inc = potential_sum  # potential값 저장
-    ax5_x.append(radius - 1)
+    ax5_x.append(atom_N - 1)
     ax5_y.append(difference)
     print(f"max = {max(potential_sums)}, min = {min(potential_sums)}, difference = {difference}")
     # ax5.annotate(round(max(potential_sums) - min(potential_sums), 5), (radius, max(potential_sums) - min(potential_sums)))
