@@ -228,11 +228,11 @@ print(f'z0 = {z_0_1D_inc}')
 
 ax5_x = []
 ax5_y = []
-for atom_n in range(1, len(tip_base_inc) + 1, 1):
+for atom_n in range(1, len(tip_base_inc) + 1):
     tip_inc_in = tip_base_inc[0:atom_n]  # 안에 있는 원자들만 고르기
     potential_sums = []
     for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
-        potential_sum = 0  # potential 합 초기화
+        potential_sum = 0.0  # potential 합 초기화
         for tip in tip_inc_in:  # tip의 좌표들
             for x_ in atom_base:  # 원자의 좌표들
                 potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
@@ -245,7 +245,7 @@ for atom_n in range(1, len(tip_base_inc) + 1, 1):
     print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
 ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o')
 ax5.set_xticks([round(x, 4) for x in ax5_x])
-ax5.set_yticks(list(set(ax5_y)))
+ax5.set_yticks(ax5_y)
 print(ax5_y)
 for i in ax5_y:
     print(round(i / ax5_y[0], 3), end=", ")

@@ -5,42 +5,41 @@ import matplotlib.pyplot as plt
 lattice = 2
 cms_lattice = 1.5
 # inc_lattice = 1.5
-atom_limit = 150
-create_base_cms = 100  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+atom_limit = 100
+create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 # create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc) (네모꼴) (stom_N_inc 보다 크게)
 
-atom_N_cms = 5  # 계산할 원자개수(1D) = 그릴 그래프 수
+atom_N_cms = 6  # 계산할 원자개수(1D) = 그릴 그래프 수
 # atom_N_inc = int(np.trunc(radius_inc / inc_lattice))
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
 
 fig = plt.figure(figsize=(15, 7.5))
+# 일단 그림이랑, 모두 다 합한 그래프
 ax0 = fig.add_subplot(2, graph_column, 1, title="1D")
-ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
 
-# for n in range(2, atom_N_cms):
-#     if n < graph_column
-#         ax = fig.add_subplot(2, graph_column, n + 1, title='{n - 1}th atom')")
-
-# ax1 = fig.add_subplot(242, title="1D")
-# ax2 = fig.add_subplot(243, title="2D")
-# ax3 = fig.add_subplot(244, title="2D")
-# ax5 = fig.add_subplot(246, title="1D incommensurate")
-# ax6 = fig.add_subplot(247, title="2D commensurate")
-# ax7 = fig.add_subplot(248, title="2D incommensurate")
-# ax4 = fig.add_subplot(245, title=f"potential at {atom_N_cms} atom")
+# 각 원자별 그래프
+axes = []
+for n in range(atom_N_cms):
+    if n < graph_column - 1:
+        ax = fig.add_subplot(2, graph_column, n + 2, title=f'{n + 1}th atom')
+    else:
+        ax = fig.add_subplot(2, graph_column, n + 3, title=f'{n + 1}th atom')
+    axes.append(ax)
 
 radius_cms = (atom_N_cms - 1) / 2 * cms_lattice + 0.01  # tip 원 반지름(cms)
 print(radius_cms)
 radius_inc = radius_cms  # tip 원 반지름(inc)
 ax_limit = round(radius_inc * 1.2 + lattice)  # 그래프 확대 (보여주기)
 
+# 앞에 보이게 하려고
+ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
+
 print(f'atom_N_cms = {atom_N_cms}')
 
-for n in range(0,1):
-    exec(f'ax{n}.set_xlim(-ax_limit, ax_limit)')
-    exec(f'ax{n}.set_ylim(-ax_limit, ax_limit)')
-    exec(f'ax{n}.set_aspect("equal")')
+ax0.set_xlim(-ax_limit, ax_limit)
+ax0.set_ylim(-ax_limit, ax_limit)
+# ax0.set_aspect("equal")
 
 # 격자 그리기 (파악하기 쉽게)
 ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_lattice)])
@@ -57,7 +56,7 @@ ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
 # ax1.axis('off')
 
 # 2D 그리기
-atom_x_mesh, atom_y_mesh = np.meshgrid(atom_base, atom_base)
+# atom_x_mesh, atom_y_mesh = np.meshgrid(atom_base, atom_base)
 
 # ax2.scatter(atom_x_mesh, atom_y_mesh, c='k', s=3)
 # ax2.axis('off')
@@ -166,7 +165,7 @@ def distance_3d(cor1, cor2):
 
 
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=5):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -190,7 +189,7 @@ print(len(tip_cms_in), tip_cms_in)
 print(f'1D commensurate', end=" >> ")
 z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
 potential_0_1D_cms = 100000
-for z_ in np.arange(3.5, 3.7, 0.01):  # 이 범위에서 z반복
+for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
     potential_sum = 0
     for tip in tip_cms_in:
         for x_ in atom_base:
@@ -200,18 +199,30 @@ for z_ in np.arange(3.5, 3.7, 0.01):  # 이 범위에서 z반복
         potential_0_1D_cms = potential_sum
 print(f'z0 = {z_0_1D_cms}')
 
+# 합 저장할 리스트
+x_step = 0.01
+ax_sum_potential = [0.0 for x in np.arange(0, lattice, x_step)]
+ax_x = [x for x in np.arange(0, lattice, x_step)]
+
 # tip의 한 원자에 대해서만 프로파일 구하기
-for i, tip in enumerate(tip_cms_in):
-    ax_x = []
+for i_tip, tip in enumerate(tip_cms_in):
+    # ax_x = []
     potential_sums = []
-    for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면서 반복
+    for i, x_move in enumerate(ax_x):  # 옆으로 조금씩 움직이면서 반복
         potential_sum = 0.0  # potential 합 초기화
         for x_ in atom_base:  # 원자의 좌표들
             # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
             potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_cms))
-        ax_x.append(x_move)
+        # ax_x.append(x_move)
         potential_sums.append(potential_sum)
-    exec(f"ax{i + 3}.plot(ax_x, potential_sums, linestyle='-', marker='o')")
+        ax_sum_potential[i] += potential_sum
+    axes[i_tip].plot(ax_x, potential_sums)
+    axes[i_tip].set_yticks([min(potential_sums), max(potential_sums)])
+ax_sum.plot(ax_x, ax_sum_potential)
+print(max(ax_sum_potential), min(ax_sum_potential))
+print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
+ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
 
-fig.tight_layout()
+
+# fig.tight_layout()
 plt.show()

@@ -14,11 +14,11 @@ ax3 = fig.add_subplot(244, title="2D")
 lattice = 2
 cms_lattice = 1.5
 # inc_lattice = 1.5
-atom_limit = 150
-create_base_cms = 100  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+atom_limit = 100
+create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 # create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc) (네모꼴) (stom_N_inc 보다 크게)
 
-atom_N_cms = 5  # 계산할 원자개수(1D)
+atom_N_cms = 14  # 계산할 원자개수(1D)
 # atom_N_inc = int(np.trunc(radius_inc / inc_lattice))
 
 ax4 = fig.add_subplot(245, title=f"potential at {atom_N_cms} atom")
@@ -203,7 +203,9 @@ for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면�
             potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_cms))
     ax4_x.append(x_move)
     potential_sums.append(potential_sum)
-ax4.plot(ax4_x, potential_sums, linestyle='-', marker='o')
+ax4.plot(ax4_x, potential_sums)
+ax4.text(lattice, (max(potential_sums) + min(potential_sums)) / 2, f'potential barrier\n{max(potential_sums) - min(potential_sums)}', horizontalalignment='left', verticalalignment='center')
+
 print()
 
 fig.tight_layout()
