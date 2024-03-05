@@ -17,11 +17,11 @@ ax7 = fig.add_subplot(248, title="2D incommensurate")
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.25
+cms_lattice = 2
 inc_lattice = 1.5
-atom_limit = 200
-create_base_cms = 150  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 150  # 팁 원자를 얼마나 생성, 계산할지(inc)
+atom_limit = 100
+create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 30  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 
 ax_limit = 15  # 그래프 확대 (보여주기)
@@ -211,6 +211,48 @@ print(ax4_y)
 for i in ax4_y:
     print(round(i / ax4_y[0], 3), end=", ")
 print()
+
+# inc
+print(f'1D incommensurate', end=" >> ")
+z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
+potential_0_1D_inc = 100000
+for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
+    potential_sum = 0
+    for tip in tip_base_inc:
+        for x_ in atom_base:
+            potential_sum += potential_2d((x_, 0), (tip, z_))
+    if potential_0_1D_inc > potential_sum:
+        z_0_1D_inc = z_
+        potential_0_1D_inc = potential_sum
+print(f'z0 = {z_0_1D_inc}')
+
+ax5_x = []
+ax5_y = []
+for atom_n in range(1, len(tip_base_inc) + 1, 1):
+    tip_inc_in = tip_base_inc[0:atom_n]  # 안에 있는 원자들만 고르기
+    potential_sums = []
+    for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
+        potential_sum = 0  # potential 합 초기화
+        for tip in tip_inc_in:  # tip의 좌표들
+            for x_ in atom_base:  # 원자의 좌표들
+                potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
+        potential_sums.append(potential_sum)
+    difference = max(potential_sums) - min(potential_sums)
+    max_index = np.argmax(potential_sums)
+    min_index = np.argmin(potential_sums)
+    ax5_x.append(atom_n)
+    ax5_y.append(difference)
+    print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
+ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o')
+ax5.set_xticks([round(x, 4) for x in ax5_x])
+ax5.set_yticks(list(set(ax5_y)))
+print(ax5_y)
+for i in ax5_y:
+    print(round(i / ax5_y[0], 3), end=", ")
+print()
+
+# 2D 그래프
+
 
 # 특정 원자수에서 프로파일 뽑기
 # n = 96
