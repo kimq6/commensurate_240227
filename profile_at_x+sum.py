@@ -165,7 +165,7 @@ def distance_3d(cor1, cor2):
 
 
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=4.5):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
