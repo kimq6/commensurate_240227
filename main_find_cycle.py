@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 fig = plt.figure(figsize=(15, 7.5))
 ax0 = fig.add_subplot(241, title="1D commensurate")
@@ -209,7 +210,7 @@ for atom_n in range(1, len(tip_base_cms) + 1, 1):
     print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
 ax4.plot(ax4_x, ax4_y, linestyle = '--', marker = 'o')
 ax4.set_xticks([round(x, 3) for x in ax4_x])
-ax4.set_yticks([round(x, 3) for x in ax4_y])
+ax4.set_yticks([round(x, 3) for x in set(ax4_y)])
 # ax4.yaxis.set_tick_params(horizontalalignment='center')
 print(ax4_x)
 print(ax4_y)
@@ -230,41 +231,31 @@ for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
         potential_0_1D_inc = potential_sum
 print(f'z0 = {z_0_1D_inc}')
 
-ax5_x = []
-ax5_y = []
-for atom_n in range(1, len(tip_base_inc) + 1):
-    tip_inc_in = tip_base_inc[0:atom_n]  # 안에 있는 원자들만 고르기
-    potential_sums = []
-    for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
-        potential_sum = 0.0  # potential 합 초기화
-        for tip in tip_inc_in:  # tip의 좌표들
-            for x_ in atom_base:  # 원자의 좌표들
-                potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-        potential_sums.append(potential_sum)
-    difference = max(potential_sums) - min(potential_sums)
-    max_index = np.argmax(potential_sums)
-    min_index = np.argmin(potential_sums)
-    ax5_x.append(atom_n)
-    ax5_y.append(difference)
-    print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
-ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o')
-ax5.set_xticks([round(x, 3) for x in ax5_x])
-ax5.set_yticks([round(x, 3) for x in set(ax5_y)])
-print(ax5_x)
-print(ax5_y)
+cycle = 4
+for remain in range(cycle):
+    ax5_x = []
+    ax5_y = []
+    color = cm.viridis(remain / cycle)
+    for atom_n in [x for x in range(1, len(tip_base_inc) + 1) if x % cycle == remain]:
+        tip_inc_in = tip_base_inc[0:atom_n]  # 안에 있는 원자들만 고르기
+        potential_sums = []
+        for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
+            potential_sum = 0.0  # potential 합 초기화
+            for tip in tip_inc_in:  # tip의 좌표들
+                for x_ in atom_base:  # 원자의 좌표들
+                    potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
+            potential_sums.append(potential_sum)
+        difference = max(potential_sums) - min(potential_sums)
+        max_index = np.argmax(potential_sums)
+        min_index = np.argmin(potential_sums)
+        ax5_x.append(atom_n)
+        ax5_y.append(difference)
+        print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
+    ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o', color=color)
+    ax5.set_xticks([round(x, 3) for x in ax5_x])
+    ax5.set_yticks([round(x, 3) for x in set(ax5_y)])
 
 print()
-
-# 2D 그래프
-
-# 2D commensurate
-ax6_x = []  # 반지름
-ax6_y = []  # barrier
-# 반지름에 대해 tip 안의 원자만 고르고
-# lattice 정사각형만큼 움직였을 때에 대해 퍼텐셜을 구하기
-# tip 좌표에 대해, xy좌표에 대해 합을 저장
-# 값을 저장
-# 그래프 그리기
 
 fig.tight_layout()
 plt.show()

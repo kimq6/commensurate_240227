@@ -1,3 +1,5 @@
+# 사실상 값이 같으니 이건 잠정 폐쇄
+
 import numpy as np
 import matplotlib.pyplot as plt
 

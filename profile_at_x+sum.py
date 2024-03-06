@@ -3,14 +3,15 @@ import matplotlib.pyplot as plt
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
-# inc_lattice = 1.5
+cms_lattice = 4 / 3
 atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
-# create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc) (네모꼴) (stom_N_inc 보다 크게)
+
+# 시그마 값
+sigma_2d = 4.5
+sigma_3d = 3.5
 
 atom_N_cms = 6  # 계산할 원자개수(1D) = 그릴 그래프 수
-# atom_N_inc = int(np.trunc(radius_inc / inc_lattice))
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
 
@@ -163,9 +164,8 @@ def distance_2d(cor1, cor2):
 def distance_3d(cor1, cor2):
     return np.sqrt(np.power((cor1[0]-cor2[0]), 2) + np.power((cor1[1]-cor2[1]), 2) + np.power((cor1[2]-cor2[2]), 2))
 
-
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=4.5):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_2d):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -173,7 +173,7 @@ def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=4.5):
         return 0
 
 
-def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):  # cor1, cor2: 3차원 좌표 2개, d: DIJ, x: xIJ, sigma: 몇 시그마까지 할지
+def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_3d):  # cor1, cor2: 3차원 좌표 2개, d: DIJ, x: xIJ, sigma: 몇 시그마까지 할지
     distance = distance_3d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -224,5 +224,4 @@ print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
 ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
 
 
-# fig.tight_layout()
 plt.show()
