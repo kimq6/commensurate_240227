@@ -9,17 +9,18 @@ atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
-sigma_2d = 4.5
+sigma_2d = 3.5
 sigma_3d = 3.5
 
-ax_limit = 15  # 그래프 확대 (보여주기)
-radius_cms = 5  # tip 원 반지름(cms) (보여주기)
+radius_cms = 10  # tip 원 반지름(cms) (보여주기)
 
 cycle = 4
 
 atom_N_cms = 7  # 보여줄 원자개수(1D)
 graph_column = int(np.ceil(cycle / 2)) + 1
-print(f'asdf {graph_column}')
+print(f'graph_column {graph_column}')
+
+ax_limit = round(radius_cms * 1.2 + lattice)  # 그래프 확대 (보여주기)
 
 fig = plt.figure(figsize=(15, 7.5))
 # 일단 그림
@@ -28,17 +29,12 @@ ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_latti
 
 # 각 원자별 그래프
 axes = []
-for n in range(atom_N_cms):
+for n in range(cycle):
     if n < graph_column - 1:
-        ax = fig.add_subplot(2, graph_column, n + 2, title=f'{n + 1}th atom')
+        ax = fig.add_subplot(2, graph_column, n + 2, title=f'atom / {cycle} remain ... {n}')
     else:
-        ax = fig.add_subplot(2, graph_column, n + 3, title=f'{n + 1}th atom')
+        ax = fig.add_subplot(2, graph_column, n + 3, title=f'atom / {cycle} remain ... {n}')
     axes.append(ax)
-
-radius_cms = (atom_N_cms - 1) / 2 * cms_lattice + 0.01  # tip 원 반지름(cms)
-print(radius_cms)
-radius_inc = radius_cms  # tip 원 반지름(inc)
-ax_limit = round(radius_inc * 1.2 + lattice)  # 그래프 확대 (보여주기)
 
 # 앞에 보이게 하려고 뒤에만듦
 ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
