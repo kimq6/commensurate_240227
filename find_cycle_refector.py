@@ -3,13 +3,16 @@ import matplotlib.pyplot as plt
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
-atom_limit = 300
+cms_lattice = 4 / 3
+atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
-sigma_2d = 4
+sigma_2d = 4.5
 sigma_3d = 3.5
+
+ax_limit = 15  # 그래프 확대 (보여주기)
+radius_cms = 10  # tip 원 반지름(cms) (보여주기)
 
 atom_N_cms = 6  # 계산할 원자개수(1D) = 그릴 그래프 수
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
@@ -18,6 +21,7 @@ print(f'asdf {graph_column}')
 fig = plt.figure(figsize=(15, 7.5))
 # 일단 그림
 ax0 = fig.add_subplot(2, graph_column, 1, title="1D")
+ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_lattice)])
 
 # 각 원자별 그래프
 axes = []
@@ -216,10 +220,9 @@ for i_tip, tip in enumerate(tip_cms_in):
         # ax_x.append(x_move)
         potential_sums.append(potential_sum)
         ax_sum_potential[i] += potential_sum
-    axes[i_tip].plot(ax_x, potential_sums, linestyle = '--', marker = 'o', markersize = 2)
-    # axes[i_tip].set_yticks([min(potential_sums), max(potential_sums)])
-ax_sum.plot(ax_x, ax_sum_potential, linestyle = '--', marker = 'o', markersize = 2)
-ax_sum.set_yticks([min(ax_sum_potential), max(ax_sum_potential)])
+    axes[i_tip].plot(ax_x, potential_sums, linestyle = '--', marker = 'o')
+    axes[i_tip].set_yticks([min(potential_sums), max(potential_sums)])
+ax_sum.plot(ax_x, ax_sum_potential, linestyle = '--', marker = 'o')
 print(max(ax_sum_potential), min(ax_sum_potential))
 print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
 ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
