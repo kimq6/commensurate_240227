@@ -21,14 +21,14 @@ cms_lattice = 2
 inc_lattice = 1.5
 atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 30  # 팁 원자를 얼마나 생성, 계산할지(inc)
+create_base_inc = 50  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 # 코드 실행 여부 결정
 do_1D_cms = 0
 do_1D_inc = 1
 
 # 시그마 값
-sigma_2d = 4.5
+sigma_2d = 4
 sigma_3d = 3.5
 
 ax_limit = 15  # 그래프 확대 (보여주기)

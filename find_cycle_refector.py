@@ -4,17 +4,17 @@ import matplotlib.cm as cm
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
+cms_lattice = 1.25
 atom_limit = 100
-create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base_cms = 70  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
-sigma_2d = 3.5
+sigma_2d = 4.5
 sigma_3d = 3.5
 
 radius_cms = 10  # tip 원 반지름(cms) (보여주기)
 
-cycle = 4
+cycle = 8
 
 atom_N_cms = 7  # 보여줄 원자개수(1D)
 graph_column = int(np.ceil(cycle / 2)) + 1
@@ -125,7 +125,7 @@ print(f'z0 = {z_0_1D_cms}')
 for remain in range(cycle):
     ax_sum_x = []
     ax_sum_y = []
-    color = cm.viridis(remain / cycle)
+    color = cm.jet(remain / cycle)
     for atom_n in [x for x in range(1, len(tip_base_cms) + 1) if x % cycle == remain]:
         tip_inc_in = tip_base_cms[0:atom_n]  # 안에 있는 원자들만 고르기
         potential_sums = []
@@ -143,7 +143,9 @@ for remain in range(cycle):
         print(f"atom number = {atom_n}, max = {max(potential_sums)}, {max_index}, min = {min(potential_sums)}, {min_index}, difference = {difference}")
     ax_sum.plot(ax_sum_x, ax_sum_y, linestyle = '--', marker = 'o', color=color)
     ax_sum.set_xticks([round(x, 3) for x in ax_sum_x])
-    # ax_sum.set_yticks([round(x, 3) for x in set(ax_sum_y)])
+    axes[remain].plot(ax_sum_x, ax_sum_y, linestyle = '--', marker = 'o', color=color)
+    axes[remain].set_xticks([round(x, 3) for x in ax_sum_x])
+    axes[remain].set_yticks([round(x, 5) for x in set(ax_sum_y)])
 
 print()
 
