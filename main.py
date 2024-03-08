@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import save_graph
 
 fig = plt.figure(figsize=(15, 7.5))
 ax0 = fig.add_subplot(241, title="1D commensurate")
@@ -272,4 +273,5 @@ ax6_y = []  # barrier
 # 그래프 그리기
 
 fig.tight_layout()
+save_graph.save_graph(f'main_{sigma_2d}σ, {lattice}-{inc_lattice}')
 plt.show()
