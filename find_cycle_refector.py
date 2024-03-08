@@ -4,7 +4,7 @@ import matplotlib.cm as cm
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.25
+cms_lattice = 1.5
 atom_limit = 100
 create_base_cms = 70  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
@@ -14,9 +14,8 @@ sigma_3d = 3.5
 
 radius_cms = 10  # tip 원 반지름(cms) (보여주기)
 
-cycle = 8
+cycle = 4
 
-atom_N_cms = 7  # 보여줄 원자개수(1D)
 graph_column = int(np.ceil(cycle / 2)) + 1
 print(f'graph_column {graph_column}')
 
@@ -37,10 +36,7 @@ for n in range(cycle):
     axes.append(ax)
 
 # 앞에 보이게 하려고 뒤에만듦
-ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
-
-
-print(f'atom_N_cms = {atom_N_cms}')
+ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sigma = {sigma_2d}, lattice ratio = {lattice} : {cms_lattice}")
 
 
 ax0.set_xlim(-ax_limit, ax_limit)
