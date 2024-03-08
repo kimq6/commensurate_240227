@@ -2,3 +2,4 @@ commensurate_240227.code-workspace
 test1.py
 images/.DS_Store
 .DS_Store
+*pyc
