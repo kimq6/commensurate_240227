@@ -29,7 +29,7 @@ do_1D_cms = 0
 do_1D_inc = 1
 
 # 시그마 값
-sigma_2d = 4
+sigma_2d = 3.5
 sigma_3d = 3.5
 
 ax_limit = 15  # 그래프 확대 (보여주기)
@@ -200,7 +200,7 @@ if do_1D_cms == 1:
     for atom_n in range(1, len(tip_base_cms) + 1, 1):
         tip_cms_in = tip_base_cms[0:atom_n]  # 안에 있는 원자들만 고르기
         potential_sums = []
-        for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
+        for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면서 반복
             potential_sum = 0  # potential 합 초기화
             for tip in tip_cms_in:  # tip의 좌표들
                 for x_ in atom_base:  # 원자의 좌표들
@@ -241,7 +241,7 @@ if do_1D_inc == 1:
     for atom_n in range(1, len(tip_base_inc) + 1):
         tip_inc_in = tip_base_inc[0:atom_n]  # 안에 있는 원자들만 고르기
         potential_sums = []
-        for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
+        for x_move in np.arange(0, lattice, 0.01):  # 옆으로 조금씩 움직이면서 반복
             potential_sum = 0.0  # potential 합 초기화
             for tip in tip_inc_in:  # tip의 좌표들
                 for x_ in atom_base:  # 원자의 좌표들

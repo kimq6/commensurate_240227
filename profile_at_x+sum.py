@@ -1,17 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import save_graph
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
+cms_lattice = 2
 atom_limit = 100
-create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
 sigma_2d = 3.5
 sigma_3d = 3.5
 
-atom_N_cms = 1  # 계산할 원자개수(1D) = 그릴 그래프 수
+atom_N_cms = 10  # 계산할 원자개수(1D) = 그릴 그래프 수
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
 
@@ -224,5 +225,5 @@ print(max(ax_sum_potential), min(ax_sum_potential))
 print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
 ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
 
-
+save_graph.save_graph(f'{atom_N_cms}atom_{sigma_2d}σ, {lattice}-{cms_lattice}')
 plt.show()
