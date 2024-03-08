@@ -1,6 +1,5 @@
 commensurate_240227.code-workspace
 test1.py
-images/.DS_Store
+images/
 .DS_Store
 *.pyc
-*.png
