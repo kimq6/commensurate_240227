@@ -3,8 +3,12 @@ import matplotlib.pyplot as plt
 
 # 여러 변수
 lattice = 2
-tip_lattice = 1.5
-atom_N_cms = 1  # 계산할 원자개수
+tip_lattice = 1.25
+
+atom_base = 50
+tip_base = 30
+
+atom_N_cms = 2  # 계산할 원자개수
 
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
@@ -22,13 +26,50 @@ for n in range(atom_N_cms):
         ax = fig.add_subplot(2, graph_column, n + 3, title=f'{n + 1}th atom')
     axes.append(ax)
 
-# axes[0] sin 만들기
-x_1 = np.linspace(0, 2, 100)
-y_1 = np.sin(np.pi*x_1)
+# ax_sum 그리기
+ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
 
-axes[0].plot(x_1, y_1, linestyle=' ', marker='.')
-axes[0].set_xlabel('x')
-axes[0].set_ylabel('sin(x)')
-axes[0].set_title('Sine Function')
+# ax0 그리기
+radius_tip = (atom_N_cms - 1) / 2 * tip_lattice + 0.01
+ax_limit = round(radius_tip * 1.2 + lattice)
+ax0.set_xlim(-lattice*1.2, ax_limit * 2 - lattice*1.2)
+ax0.set_ylim(-ax_limit, ax_limit)
+
+# 좌표 베이스
+atom_base = [x * s for s in (1, -1) for x in np.arange(lattice / 2, atom_base, lattice)]
+
+# 1D 그리기
+ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
+
+# 팁 원자 베이스
+tip_base_list = [x * s for s in (1, -1) for x in np.arange(tip_lattice, tip_base, tip_lattice)]
+tip_base_list.insert(0, 0.0)
+
+# ax0 팁 그리기
+ax0.scatter(tip_base_list, [0 for x in tip_base_list], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
+tip_base_list_in = [x for x in tip_base_list[0:atom_N_cms]]
+ax0.scatter(tip_base_list_in, [0 for x in tip_base_list_in], c='r', s=10, marker='o')  # 빨강
+
+# 격자 그리기 (위에서 이동됨)
+ax0.set_xticks(tip_base_list_in)
+
+# 합 리스트
+x_cut = 10000
+ax_sum_x = [x for x in np.linspace(0, lattice, x_cut)]
+ax_sum_y = [0.0 for x in np.linspace(0, lattice, x_cut)]
+
+print(lattice-tip_lattice)
+
+for n in range(atom_N_cms):
+    x_ = np.linspace(0, lattice, x_cut)
+    x_cal = np.array([x - lattice/4 - n*(lattice-tip_lattice) for x in x_])
+    y_ = np.sin(np.pi*x_cal)
+    axes[n].plot(x_, y_, linestyle=' ', marker='.')
+    ax_sum_y += y_
+
+ax_sum.plot(ax_sum_x, ax_sum_y, linestyle=' ', marker='.')
+if max(ax_sum_y) - min(ax_sum_y) > 0.0000001:
+    ax_sum.set_yticks([0, round(max(ax_sum_y), 4), round(min(ax_sum_y), 4)])
+ax_sum.text(0.0, (max(ax_sum_y) + min(ax_sum_y)) / 2, f'potential barrier\n{max(ax_sum_y) - min(ax_sum_y)}', horizontalalignment='left', verticalalignment='center')
 
 plt.show()

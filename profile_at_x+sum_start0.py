@@ -6,7 +6,7 @@ import save_graph
 lattice = 2
 cms_lattice = 1.5
 atom_limit = 100
-create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (atom_N_cms 보다 크게)
 
 # 시그마 값
 sigma_2d = 3.5
@@ -24,9 +24,9 @@ ax0 = fig.add_subplot(2, graph_column, 1, title="1D")
 axes = []
 for n in range(atom_N_cms):
     if n < graph_column - 1:
-        ax = fig.add_subplot(2, graph_column, n + 2, title=f'{n + 1}th atom')
+        ax = fig.add_subplot(2, graph_column, n + 2, title=f'locate at {cms_lattice * n} atom')
     else:
-        ax = fig.add_subplot(2, graph_column, n + 3, title=f'{n + 1}th atom')
+        ax = fig.add_subplot(2, graph_column, n + 3, title=f'locate at {cms_lattice * n} atom')
     axes.append(ax)
 
 radius_cms = (atom_N_cms - 1) / 2 * cms_lattice + 0.01  # tip 원 반지름(cms)
@@ -39,13 +39,9 @@ ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom
 
 print(f'atom_N_cms = {atom_N_cms}')
 
-ax0.set_xlim(-ax_limit, ax_limit)
+ax0.set_xlim(-lattice*1.2, ax_limit * 2 - lattice*1.2)
 ax0.set_ylim(-ax_limit, ax_limit)
 # ax0.set_aspect("equal")
-
-# 격자 그리기 (파악하기 쉽게)
-ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_lattice)])
-# ax1.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, inc_lattice)])
 
 # 좌표 베이스
 atom_base = [x * s for s in (1, -1) for x in np.arange(lattice / 2, atom_limit, lattice)]
@@ -67,8 +63,9 @@ ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
 # ax3.axis('off')
 
 # 팁 원자 베이스(commensurate)
-tip_base_cms = [x * s for x in np.arange(cms_lattice, create_base_cms, cms_lattice) for s in (1, -1)]
-tip_base_cms.insert(0, 0.0)
+tip_base_cms = [x * s  for s in (1, -1) for x in np.arange(0, create_base_cms, cms_lattice)]
+# tip_base_cms.insert(0, 0.0)
+print("asdfasfdasdf", len(tip_base_cms), tip_base_cms)
 
 # 팁 원자 베이스(incommensurate)
 # tip_base_inc = [x * s for x in np.arange(inc_lattice, create_base_inc, inc_lattice) for s in (1, -1)]
@@ -78,6 +75,10 @@ tip_base_cms.insert(0, 0.0)
 ax0.scatter(tip_base_cms, [0 for x in tip_base_cms], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
 tip_base_cms_in = [x for x in tip_base_cms[0:atom_N_cms]]
 ax0.scatter(tip_base_cms_in, [0 for x in tip_base_cms_in], c='r', s=10, marker='o')  # 빨강
+
+# 격자 그리기 (위에서 옮김))
+ax0.set_xticks(tip_base_cms_in)
+# ax1.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, inc_lattice)])
 
 # ax1 팁 그리기
 # ax1.scatter(tip_base_inc, [0 for x in tip_base_inc], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
@@ -224,5 +225,5 @@ print(max(ax_sum_potential), min(ax_sum_potential))
 print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
 ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
 
-save_graph.save_graph(f'{atom_N_cms}atom_{sigma_2d}σ, {lattice}-{cms_lattice}')
+save_graph.save_graph(f'(start tip 0){atom_N_cms}atom_{sigma_2d}σ, {lattice}-{cms_lattice}')
 plt.show()
