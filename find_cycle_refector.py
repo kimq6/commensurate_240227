@@ -7,7 +7,7 @@ import save_graph
 lattice = 2
 cms_lattice = 1.5
 atom_limit = 100
-create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
 sigma_2d = 4.5

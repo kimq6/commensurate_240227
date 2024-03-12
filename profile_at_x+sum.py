@@ -12,7 +12,7 @@ create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네�
 sigma_2d = 3.5
 sigma_3d = 3.5
 
-atom_N_cms = 5  # 계산할 원자개수(1D) = 그릴 그래프 수
+atom_N_cms = 6  # 계산할 원자개수(1D) = 그릴 그래프 수
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
 
