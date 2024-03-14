@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 
 # 여러 변수
 lattice = 2
-tip_lattice = 1.25
+tip_lattice = 3.1
 
 atom_base = 50
 tip_base = 30
 
-atom_N_cms = 2  # 계산할 원자개수
+atom_N_cms = 21 # 계산할 원자개수
 
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')

@@ -5,12 +5,12 @@ import save_graph
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 1.5
-atom_limit = 100
-create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+cms_lattice = 2.5
+atom_limit = 150
+create_base_cms = 70  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
-sigma_2d = 4.5
+sigma_2d = 10
 sigma_3d = 3.5
 
 radius_cms = 10  # tip 원 반지름(cms) (보여주기)
@@ -141,8 +141,8 @@ for remain in range(cycle):
     ax_sum.plot(ax_sum_x, ax_sum_y, linestyle = '--', marker = 'o', color=color)
     ax_sum.set_xticks([round(x, 3) for x in ax_sum_x])
     axes[remain].plot(ax_sum_x, ax_sum_y, linestyle = '--', marker = 'o', color=color)
-    axes[remain].set_xticks([round(x, 3) for x in ax_sum_x])
-    axes[remain].set_yticks([round(x, 5) for x in set(ax_sum_y)])
+    # axes[remain].set_xticks([round(x, 3) for x in ax_sum_x])
+    # axes[remain].set_yticks([round(x, 5) for x in set(ax_sum_y)])
 
 print()
 

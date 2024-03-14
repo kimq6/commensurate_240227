@@ -21,8 +21,8 @@ lattice = 2
 cms_lattice = 1.5
 inc_lattice = 1.25
 atom_limit = 100
-create_base_cms = 20  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 20  # 팁 원자를 얼마나 생성, 계산할지(inc)
+create_base_cms = 10  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 10  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 # 코드 실행 여부 결정
 do_1D_cms = 0
@@ -270,7 +270,7 @@ if do_2D_cms == 1:
     z_0_2D_cms = 0  # z0 저장
     potential_0_2D_cms = 100000  # potential 저장
     # 일단 최대 반지름에 대해 z0
-    for z_ in np.arange(3.5, 3.7, 0.1):
+    for z_ in np.arange(3.42, 3.44, 0.001):
         print(round(z_, 4))
         potential_sum = 0  # potential 초기화
         # mesh 생성
@@ -280,33 +280,34 @@ if do_2D_cms == 1:
         # 원 밖의 좌표는 0으로
         tip_x_mesh[tip_mesh_distance > create_base_cms] = 0
         tip_y_mesh[tip_mesh_distance > create_base_cms] = 0
-        print(len(tip_x_mesh[0]))
         for x_ in range(len(tip_x_mesh)):
             for y_ in range(len(tip_y_mesh)):
                 for atom in atom_xy:
-                    print(tip_y_mesh[x_, y_])
                     potential_sum += potential_3d((atom[0], atom[1], 0), (tip_x_mesh[x_, y_], tip_y_mesh[x_, y_], z_))
         if potential_0_2D_cms > potential_sum:
             z_0_2D_cms = z_
             potential_0_2D_cms = potential_sum
     print(f"z_0_2D_cms = {z_0_2D_cms}, potential = {potential_0_2D_cms}")
-    # if potential_0_2D_cms > potential_sum:
-    #     z_0_2D_cms = z_
-    #     potential_0_2D_cms = potential_sum
-    # print(f'z0 = {z_0_1D_inc}')
-    # # 반지름에 대해 tip 안의 원자만 고르고
-    # for radius in range(1, create_base_cms, 1):
-    #     # mesh 생성
-    #     tip_x_mesh, tip_y_mesh = np.meshgrid(tip_base_cms, tip_base_cms)
-    #     # 원 안의 좌표 거리
-    #     tip_mesh_distance = np.sqrt(np.power(tip_x_mesh, 2) + np.power(tip_y_mesh, 2))
-    #     # 원 밖의 좌표는 0으로
-    #     tip_x_mesh[tip_mesh_distance > radius] = 0
-    #     tip_y_mesh[tip_mesh_distance > radius] = 0
-    #     for x_ in range(len(tip_x_mesh)):
-    #         for y_ in range(len(tip_y_mesh)):
-    #             if tip_x_mesh[x_, y_] and tip_y_mesh[x_, y_] != 0:
-    #                 potential_3d
+
+    # 나눌 정도
+    div = 10
+    # 이동할 격자(2x2)
+    tip_move = np.linspace(0, lattice, div)
+    tip_move_x, tip_move_y = np.meshgrid(tip_move, tip_move)
+    
+    # 반지름에 대해 tip 안의 원자만 고르고
+    for radius in range(1, create_base_cms, 1):
+        # mesh 생성
+        tip_x_mesh, tip_y_mesh = np.meshgrid(tip_base_cms, tip_base_cms)
+        # 원 안의 좌표 거리
+        tip_mesh_distance = np.sqrt(np.power(tip_x_mesh, 2) + np.power(tip_y_mesh, 2))
+        # 원 밖의 좌표는 0으로
+        tip_x_mesh[tip_mesh_distance > radius] = 0
+        tip_y_mesh[tip_mesh_distance > radius] = 0
+        for x_ in range(len(tip_x_mesh)):
+            for y_ in range(len(tip_y_mesh)):
+                if tip_x_mesh[x_, y_] and tip_y_mesh[x_, y_] != 0:
+                    potential_3d
 
 
 # lattice 정사각형만큼 움직였을 때에 대해 퍼텐셜을 구하기
