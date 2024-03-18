@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 여러 변수asdf
+# 여러 변수
 lattice = 2
 tip_lattice = 1.5
 
