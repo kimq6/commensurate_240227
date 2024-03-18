@@ -309,7 +309,6 @@ if do_2D_cms == 1:
                 if tip_x_mesh[x_, y_] and tip_y_mesh[x_, y_] != 0:
                     potential_3d
 
-
 # lattice 정사각형만큼 움직였을 때에 대해 퍼텐셜을 구하기
 # tip 좌표에 대해, xy좌표에 대해 합을 저장
 # 값을 저장
