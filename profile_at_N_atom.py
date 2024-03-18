@@ -18,11 +18,7 @@ atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 # create_base_inc = 100  # 팁 원자를 얼마나 생성, 계산할지(inc) (네모꼴) (stom_N_inc 보다 크게)
 
-# 시그마 값
-sigma_2d = 3.5
-sigma_3d = 3.5
-
-atom_N_cms = 6  # 계산할 원자개수(1D)
+atom_N_cms = 14  # 계산할 원자개수(1D)
 # atom_N_inc = int(np.trunc(radius_inc / inc_lattice))
 
 ax4 = fig.add_subplot(245, title=f"potential at {atom_N_cms} atom")
@@ -163,7 +159,7 @@ def distance_3d(cor1, cor2):
 
 
 # 퍼텐셜값 찾기
-def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_2d):
+def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=5):
     distance = distance_2d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))
@@ -171,7 +167,7 @@ def potential_2d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_2d):
         return 0
 
 
-def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_3d):  # cor1, cor2: 3차원 좌표 2개, d: DIJ, x: xIJ, sigma: 몇 시그마까지 할지
+def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=3.5):  # cor1, cor2: 3차원 좌표 2개, d: DIJ, x: xIJ, sigma: 몇 시그마까지 할지
     distance = distance_3d(cor1, cor2)
     if distance < sigma * np.power(2, -1/6) * x_ij:  # 시그마 안의 거리에 있는 원자는 그냥 포텐셜 값 구하기
         return d_ij * (np.power((x_ij/distance), 12) - 2 * np.power((x_ij/distance), 6))

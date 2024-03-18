@@ -4,12 +4,12 @@ import matplotlib.cm as cm
 
 # 여러 변수
 lattice = 1
-tip_lattice = np.pi/2
+tip_lattice = 1
 
-atom_N_cms = 300  # 계산할 원자개수(어디까지)
+atom_N_cms = 20  # 계산할 원자개수(어디까지)
 
-ax1_option = 1  # 0: 그냥 그리기, 1: 색상별로 그리기
-cycle = 7  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨
+ax1_option = 0  # 0: 그냥 그리기, 1: 색상별로 그리기
+cycle = 10  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨
 
 fig = plt.figure(figsize=(15, 7.5))
 # 일단 그림
@@ -26,7 +26,7 @@ for N_ in range(atom_N_cms):  # 계산할 원자수 인덱스 0, 1, 2, 3, 4에 �
     for n in range(N_):  # 원자 1번에 대해 / 1, 2번에 대해 / 1, 2, 3번에 대해 / ...
         x_ = np.linspace(0, lattice, x_cut)  # [0, 0.01, 0.02, 0.03, ..., 2]
         x_cal = np.array([x - lattice/4 - n*(lattice-tip_lattice) for x in x_])  # [-1, -0.09, -0.08, ..., 1] 평행이동한거
-        y_ = np.sin(2*np.pi/lattice * x_cal)  # [f(-1), f(-0.09), f(-0.08), ..., f(1)]
+        y_ = np.sin(2*np.pi/lattice * x_cal)/2  # [f(-1), f(-0.09), f(-0.08), ..., f(1)]
         sum_y += y_  # potential profile 누적
     potential_barrier = max(sum_y) - min(sum_y)
     ax1_x.append(N_)
