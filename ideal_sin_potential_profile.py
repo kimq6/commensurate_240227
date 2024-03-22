@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 여러 변수
-lattice = 2
-tip_lattice = 1.5
+lattice = 1
+tip_lattice = 1/3
 
 atom_base = 50
 tip_base = 30
 
-atom_N_cms = 6  # 계산할 원자개수
+atom_N_cms = 3  # 계산할 원자개수
 z_0 = 3.6
 
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
