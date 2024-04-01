@@ -28,7 +28,7 @@ radius_inc = inc_lattice / 2 * 10  # tip 원 반지름(inc) (보여주기)
 tip_limit_number_cms = 0
 
 create_base_cms = 200  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 20  # 팁 원자를 얼마나 생성, 계산할지(inc)
+create_base_inc = 200  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 for n in range(0,4):
     exec(f'ax{n}.set_xlim(-ax_limit, ax_limit)')

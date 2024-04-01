@@ -3,16 +3,16 @@ import matplotlib.pyplot as plt
 import save_graph
 
 # 여러 변수들, 단위 [Å]
-lattice = 2
-cms_lattice = 1.5
+lattice = 0.5
+cms_lattice = 0.5
 atom_limit = 100
 create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
-sigma_2d = 7
+sigma_2d = 3.5
 sigma_3d = 3.5
 
-atom_N_cms = 8  # 계산할 원자개수(1D) = 그릴 그래프 수
+atom_N_cms = 1  # 계산할 원자개수(1D) = 그릴 그래프 수
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 print(f'asdf {graph_column}')
 

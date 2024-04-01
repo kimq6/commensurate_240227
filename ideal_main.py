@@ -4,18 +4,17 @@ import matplotlib.cm as cm
 
 # 여러 변수
 lattice = 1
-tip_lattice = 2
+tip_lattice = 0.75
 
-atom_N_cms = 50  # 계산할 원자개수(어디까지)
+atom_N_cms = 30  # 계산할 원자개수(어디까지)
 
-ax1_option = 0  # 0: 그냥 그리기, 1: 색상별로 그리기
-cycle = 10  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨
+ax1_option = 1  # 0: 그냥 그리기, 1: 색상별로 그리기
+cycle = 4  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨
 
 plt.rcParams.update({'font.size': 24})
 fig = plt.figure(figsize=(15, 7.5))
 # 일단 그림
-# ax1 = fig.add_subplot(1, 1, 1, title=f"potential barrier - atom number / {lattice} : {tip_lattice}")
-ax1 = fig.add_subplot(1, 1, 1)
+ax1 = fig.add_subplot(1, 1, 1, title=f"potential barrier - atom number / {lattice} : {tip_lattice}")
 
 x_cut = 10000
 ax1_x = []
@@ -46,11 +45,8 @@ else:
 
 ax1.set_xlabel('atom number')
 ax1.set_ylabel('potential barrier')
-# ax1.set_xticks(ax1_x)
-# ax1.set_yticks(ax1_y)
-
-ax1.set_xticks([])
-ax1.set_yticks([])
+ax1.set_xticks(ax1_x)
+ax1.set_yticks(ax1_y)
 
 plt.tight_layout()
 plt.show()
