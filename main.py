@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
+
+# 코드 실행 시간 측정
+start_time = time.time()
 
 fig = plt.figure(figsize=(15, 7.5))
 ax0 = fig.add_subplot(241, title="1D commensurate")
@@ -17,11 +21,11 @@ ax7 = fig.add_subplot(248, title="2D incommensurate")
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
-cms_lattice = 2
+cms_lattice = 1.5
 inc_lattice = 1.5
 atom_limit = 50
-create_base_cms = 20  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 20  # 팁 원자를 얼마나 생성, 계산할지(inc)
+create_base_cms = 14  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 14  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 # parameter
 x_cc = 3.851  # carbon-carbon distance
@@ -32,14 +36,14 @@ sigma_2d = 7
 sigma_3d = 7
 
 # 보여주기용 변수들
-radius_cms = 10  # tip 원 반지름(cms)
-radius_inc = 10  # tip 원 반지름(inc)
+radius_cms = 5  # tip 원 반지름(cms)
+radius_inc = 5  # tip 원 반지름(inc)
 ax_limit = (radius_cms + lattice) * 1.2  # 그래프 확대
 
 # 1이 실행하는거
 cms_1D = 0
 inc_1D = 0
-cms_2D = 0
+cms_2D = 1
 inc_2D = 0
 
 for n in range(0,4):
@@ -90,73 +94,57 @@ ax1.scatter(tip_base_inc_in, [0 for x in tip_base_inc_in], c='r', s=10, marker='
 
 # 2D mesh생성(commensurate)
 tip_x_cms_mesh, tip_y_cms_mesh = np.meshgrid(tip_base_cms, tip_base_cms)
-# 변형이 편한 list 형태로 바꾸기
-# tip_x_cms_mesh = [list(x) for x in tip_x_cms_mesh]
-# tip_y_cms_mesh = [list(x) for x in tip_y_cms_mesh]
 
 # ax2 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
 ax2.scatter(tip_x_cms_mesh, tip_y_cms_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
-# # 원 안의 좌표만 고르기
+# 원 안의 좌표만 고르기
+# 원점으로부터의 거리를 계산한 행렬
 tip_cms_mesh_distance = np.sqrt(np.power(tip_x_cms_mesh, 2) + np.power(tip_y_cms_mesh, 2))
-tip_cms_mesh_distance[tip_cms_mesh_distance > radius_cms] = np.NaN
-tip_cms_mesh_distance[tip_cms_mesh_distance <= radius_cms] = 1
+# 원 밖의 좌표는 NaN으로, 원 안의 좌표는 1로 바꾸기
+tip_cms_draw_bool = np.empty_like(tip_cms_mesh_distance)
+tip_cms_draw_bool[tip_cms_mesh_distance > radius_cms] = np.NaN
+tip_cms_draw_bool[tip_cms_mesh_distance <= radius_cms] = 1
+# 원 안의 좌표의 값만 가지는 행렬
+tip_x_cms_draw = tip_x_cms_mesh * tip_cms_draw_bool
+tip_y_cms_draw = tip_y_cms_mesh * tip_cms_draw_bool
 
-tip_x_cms_draw = tip_x_cms_mesh * tip_cms_mesh_distance
-tip_y_cms_draw = tip_y_cms_mesh * tip_cms_mesh_distance
-
-# tip_cms_mesh_in = tip_cms_mesh_distance.copy()
-# tip_cms_mesh_out = tip_cms_mesh_distance.copy()
-
-# for x in range(len(tip_base_cms)):
-#     for y in range(len(tip_base_cms)):
-#         if tip_cms_mesh_distance[x, y] > radius_cms:
-#             tip_x_cms_mesh[x][y] = np.NaN
-#             tip_y_cms_mesh[x][y] = np.NaN
-
-# tip_x_cms_list = [y for x in tip_x_cms_mesh for y in x]
-# tip_y_cms_list = [y for x in tip_y_cms_mesh for y in x]
-# tip_cms_distance_list = np.sqrt(np.power(tip_x_cms_list, 2) + np.power(tip_y_cms_list, 2))
-# for i, d in enumerate(tip_cms_distance_list):
-#     if d > radius_cms:
-#         tip_x_cms_list[i] = np.NaN
-#         tip_y_cms_list[i] = np.NaN
-
-# tip_x_cms_list = np.array(tip_x_cms_list)
-# tip_y_cms_list = np.array(tip_y_cms_list)
-# tip_x_cms_list = tip_x_cms_list[tip_x_cms_list != np.NaN]
-# tip_y_cms_list = tip_y_cms_list[tip_y_cms_list != np.NaN]
-
-# for i, x in enumerate(tip_x_cms_list):
-#     for j, y in enumerate(tip_y_cms_list):
-#         if np.sqrt(np.power(x, 2) + np.power(y, 2)) > radius_cms:
-#             tip_x_cms_list[i] = 0
-#             tip_y_cms_list[j] = 0
-
+# 원 안의 좌표의 값만 가지는 리스트 만들기(순서쌍으로)
+tip_x_cms_draw_list = [y for x in tip_x_cms_draw for y in x]
+tip_y_cms_draw_list = [y for x in tip_y_cms_draw for y in x]
+tip_xy_cms_draw = list(zip(tip_x_cms_draw_list, tip_y_cms_draw_list))
+# NaN값 없애기
+tip_xy_cms_draw = [x for x in tip_xy_cms_draw if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...](그림에 그려진 tip 원자 개수만큼)
 
 # ax2 팁 그리기(빨강)
 ax2.scatter(tip_x_cms_draw, tip_y_cms_draw, c='r', s=10, marker='o')
 
 # 2D mesh 생성(incommensurate)
 tip_x_inc_mesh, tip_y_inc_mesh = np.meshgrid(tip_base_inc, tip_base_inc)
-# 변형이 편한 list 형태로 바꾸기
-# tip_x_inc_mesh = [list(x) for x in tip_x_inc_mesh]
-# tip_y_inc_mesh = [list(x) for x in tip_y_inc_mesh]
 
 # ax3 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
 ax3.scatter(tip_x_inc_mesh, tip_y_inc_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
 # 원 안의 좌표만 고르기
+# 원점으로부터의 거리를 계산한 행렬
 tip_inc_mesh_distance = np.sqrt(np.power(tip_x_inc_mesh, 2) + np.power(tip_y_inc_mesh, 2))
+# 원 밖의 좌표는 NaN으로, 원 안의 좌표는 1로 바꾸기
+tip_inc_draw_bool = np.empty_like(tip_inc_mesh_distance)
+tip_inc_draw_bool[tip_inc_mesh_distance > radius_inc] = np.NaN
+tip_inc_draw_bool[tip_inc_mesh_distance <= radius_inc] = 1
+# 원 안의 좌표의 값만 가지는 행렬
+tip_x_inc_draw = tip_x_inc_mesh * tip_inc_draw_bool
+tip_y_inc_draw = tip_y_inc_mesh * tip_inc_draw_bool
 
-for x in range(len(tip_base_inc)):
-    for y in range(len(tip_base_inc)):
-        if tip_inc_mesh_distance[x, y] > radius_inc:
-            tip_x_inc_mesh[x][y] = np.NaN
-            tip_y_inc_mesh[x][y] = np.NaN
+# 원 안의 좌표의 값만 가지는 리스트 만들기(순서쌍으로)
+tip_x_inc_draw_list = [y for x in tip_x_cms_draw for y in x]
+tip_y_inc_draw_list = [y for x in tip_y_cms_draw for y in x]
+tip_xy_inc_draw = list(zip(tip_x_inc_draw_list, tip_y_inc_draw_list))
+# NaN값 없애기
+tip_xy_inc_draw = [x for x in tip_xy_inc_draw if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...](그림에 그려진 tip 원자 개수만큼)
 
 # ax3 팁 그리기(빨강)
-ax3.scatter(tip_x_inc_mesh, tip_y_inc_mesh, c='r', s=10, marker='o')
+ax3.scatter(tip_x_inc_draw, tip_y_inc_draw, c='r', s=10, marker='o')
 
 # mesh한 원자 좌표 보기 편하게(순서쌍으로) 바꾸기(1D)
 atom_x = []  # 원자 좌표가 보기 편한 [(x1,0), (x2,0), ...]형태로 되어있음
@@ -169,25 +157,25 @@ for x in atom_base:
     for y in atom_base:
         atom_xy.append((x, y))
 
-"""
-# 계산하는 tip원자 순서쌍으로 구하기(2D cms)
-tip_x_cms_list = [y for x in tip_x_cms_mesh for y in x]
-tip_y_cms_list = [y for x in tip_y_cms_mesh for y in x]
-tip_xy_cms_list = list(zip(tip_x_cms_list, tip_y_cms_list))
-# NaN값 없애기
-tip_xy_cms_list_unduplicate = [x for x in tip_xy_cms_list if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...]
-# scatter 가능한 형태로 tip_x_y_cms_list[0]이 x좌표 모음, tip_x_y_cms_list[1]이 y좌표 모음이다.
-tip_x_y_cms_list = list(zip(*tip_xy_cms_list_unduplicate))  # [(x1,x2,x3,...)(y1,y2,y3,...)]
 
-# 계산하는 tip원자 순서쌍으로 구하기(2D inc)
-tip_x_inc_list = [y for x in tip_x_inc_mesh for y in x]
-tip_y_inc_list = [y for x in tip_y_inc_mesh for y in x]
-tip_xy_inc_list = list(zip(tip_x_inc_list, tip_y_inc_list))
-# NaN값 없애기
-tip_xy_inc_list_unduplicate = [x for x in tip_xy_inc_list if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...]
-# scatter 가능한 형태로 tip_x_y_inc_list[0]이 x좌표 모음, tip_x_y_inc_list[1]이 y좌표 모음이다.
-tip_x_y_inc_list = list(zip(*tip_xy_inc_list_unduplicate))  # [(x1,x2,x3,...)(y1,y2,y3,...)]
-"""
+# # 계산하는 tip원자 순서쌍으로 구하기(2D cms)
+# tip_x_cms_list = [y for x in tip_x_cms_mesh for y in x]
+# tip_y_cms_list = [y for x in tip_y_cms_mesh for y in x]
+# tip_xy_cms_list = list(zip(tip_x_cms_list, tip_y_cms_list))
+# # NaN값 없애기
+# tip_xy_cms_list_unduplicate = [x for x in tip_xy_cms_list if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...]
+# # scatter 가능한 형태로 tip_x_y_cms_list[0]이 x좌표 모음, tip_x_y_cms_list[1]이 y좌표 모음이다.
+# tip_x_y_cms_list = list(zip(*tip_xy_cms_list_unduplicate))  # [(x1,x2,x3,...)(y1,y2,y3,...)]
+
+# # 계산하는 tip원자 순서쌍으로 구하기(2D inc)
+# tip_x_inc_list = [y for x in tip_x_inc_mesh for y in x]
+# tip_y_inc_list = [y for x in tip_y_inc_mesh for y in x]
+# tip_xy_inc_list = list(zip(tip_x_inc_list, tip_y_inc_list))
+# # NaN값 없애기
+# tip_xy_inc_list_unduplicate = [x for x in tip_xy_inc_list if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...]
+# # scatter 가능한 형태로 tip_x_y_inc_list[0]이 x좌표 모음, tip_x_y_inc_list[1]이 y좌표 모음이다.
+# tip_x_y_inc_list = list(zip(*tip_xy_inc_list_unduplicate))  # [(x1,x2,x3,...)(y1,y2,y3,...)]
+
 
 def distance_2d(cor1, cor2):
     return np.sqrt(np.power((cor1[0]-cor2[0]), 2) + np.power((cor1[1]-cor2[1]), 2))
@@ -215,8 +203,8 @@ def potential_3d(cor1, cor2, d_ij=d_cc, x_ij=x_cc, sigma=sigma_3d):  # cor1, cor
 
 
 # 아니 이걸 반복하라고?
+print(f'1D commensurate', end=" >> ")
 if cms_1D == 1:
-    print(f'1D commensurate', end=" >> ")
     z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
     potential_0_1D_cms = 100000
     for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
@@ -251,11 +239,12 @@ if cms_1D == 1:
     ax4.set_yticks(list(set(ax4_y)))
     # for i in ax4_y:
     #     print(round(i / ax4_y[0], 3), end=", ")
-print(f'1D commensurate end')
+else:
+    print(f'not executed')
 
 # inc
+print(f'1D incommensurate', end=" >> ")
 if inc_1D == 1:
-    print(f'1D incommensurate', end=" >> ")
     z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
     potential_0_1D_inc = 100000
     for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
@@ -290,38 +279,71 @@ if inc_1D == 1:
     ax5.set_yticks(ax5_y)
     # for i in ax5_y:
     #     print(round(i / ax5_y[0], 3), end=", ")
-print(f'1D incommensurate end')
+else:
+    print(f'not executed')
 
 
 # 2D 그래프
 # 뭔가 사라진 것 같은데 다시 해야할듯
 # z0 구하기
+print(f'2D commensurate', end=" >> ")
 if cms_2D == 1:
-    print(f'tip atom number = {len(tip_xy_cms_list_unduplicate)}')
-    print(f'2D commensurate', end=" >> ")
-    z_0_2D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
-    potential_min_2D_cms = 100000  # 최소인 potential 합 저장할곳
-    for z_ in np.arange(3.38, 3.44, 0.001):  # 이 범위에서 z반복
-        potential_sum = 0  # potential의 합 초기화
-        for tip in tip_xy_cms_list_unduplicate:  # tip의 좌표들 [(x1,y1),(x2,y2),...] 형태
-            for xy in atom_xy:  # [(x1,y1), (x2,y2), ...]형태
-                # 그래핀 원자 좌표(xy[0], xy[1], 0)와 팁원자 좌표(tip[0], tip[1], z_)간의 potential을 함수로 구해서 누적
-                potential_sum += potential_3d((xy[0], xy[1], 0), (tip[0], tip[1], z_))
-        print(f'z0 = {round(z_, 4)}, potential = {round(potential_sum, 7)}')
-        if potential_min_2D_cms > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-            z_0_2D_cms = z_  # z값 저장
-            potential_min_2D_cms = potential_sum  # potential값 저장
-            print('updated')
-        else:
-            print('not updated')
-    print(f'2D commensurate z0 = {round(z_0_2D_cms, 4)}, potential = {round(potential_min_2D_cms, 7)}')
+    # 시간 오래 걸려서 이거 스킵하고 결과만 뒤로 전달
+    # z_0_2D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
+    # potential_min_2D_cms = 100000  # 최소인 potential 합 저장할곳
+    # for z_ in np.arange(3.39, 3.41, 0.0001):  # 이 범위에서 z반복
+    #     potential_sum = 0  # potential의 합 초기화
+    #     for tip in tip_xy_cms_draw:  # tip의 좌표들 [(x1,y1),(x2,y2),...] 형태
+    #         for xy in atom_xy:  # [(x1,y1), (x2,y2), ...]형태
+    #             # 그래핀 원자 좌표(xy[0], xy[1], 0)와 팁원자 좌표(tip[0], tip[1], z_)간의 potential을 함수로 구해서 누적
+    #             potential_sum += potential_3d((xy[0], xy[1], 0), (tip[0], tip[1], z_))
+    #     if potential_min_2D_cms > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
+    #         z_0_2D_cms = z_  # z값 저장
+    # print(f'2D commensurate z0 = {round(z_0_2D_cms, 4)}, potential = {round(potential_min_2D_cms, 7)}')
+    # potential_min_2D_cms = potential_sum  # potential값 저장
+    # print(f'z0 tip atom = {len(tip_xy_cms_draw)}개')
+    z_0_2D_cms = 3.399  # 결과만 뒤로 전달
 
-ax6_x = []
-ax6_y = []
-# tip_x_cms_mesh, tip_y_cms_mesh
-# for radius in np.arange(0.0, create_base_cms, cms_lattice):
-    
-
+    ax6_x = []
+    ax6_y = []
+    # x, y 움직일 좌표
+    move_devide = 11  # lattice만큼을 11*11개로 나누어서 움직임
+    move_2d_x, move_2d_y = np.meshgrid(np.linspace(0, lattice, move_devide), np.linspace(0, lattice, move_devide))
+    move_2d_x_list = [y for x in move_2d_x for y in x]
+    move_2d_y_list = [y for x in move_2d_y for y in x]
+    move_2d_xy = list(zip(move_2d_x_list, move_2d_y_list))  # [(x1,y1),(x2,y2),...] 형태
+    for radius in np.arange(0.0, create_base_cms, cms_lattice):
+        # move_2d_xy에 따른 potential값들 모아놓을 리스트 초기화
+        potential_sums = []
+        # 안에 있는 tip 원자 고르기
+        # 원점으로부터의 거리를 계산한 행렬의 값이 radius보다 작은 원자들만 고른 행렬
+        tip_bool = np.empty_like(tip_cms_mesh_distance)
+        tip_bool[tip_cms_mesh_distance > radius] = np.NaN
+        tip_bool[tip_cms_mesh_distance <= radius] = 1
+        # 원 안의 좌표의 값만 가지는 행렬
+        tip_x = tip_x_cms_mesh * tip_bool
+        tip_y = tip_y_cms_mesh * tip_bool
+        # 순서쌍으로 고치기
+        tip_x_list = [y for x in tip_x for y in x]
+        tip_y_list = [y for x in tip_y for y in x]
+        tip_xy = list(zip(tip_x_list, tip_y_list))
+        # NaN값 없애기
+        tip_xy = [x for x in tip_xy if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...](tip 원자 개수만큼 남음)
+        for move in move_2d_xy:
+            potential_sum = 0
+            for tip in tip_xy:
+                for atom in atom_xy:
+                    potential_sum += potential_3d((atom[0], atom[1], 0), (tip[0] + move[0], tip[1] + move[1], z_0_2D_cms))
+            potential_sums.append(potential_sum)
+        difference = max(potential_sums) - min(potential_sums)
+        ax6_x.append(radius)
+        ax6_y.append(difference)
+        print(f"radius = {radius}, max = {max(potential_sums)}, min = {min(potential_sums)}, difference = {difference}")
+    ax6.plot(ax6_x, ax6_y, linestyle = '--', marker = 'o')
+    ax6.set_xticks([round(x, 4) for x in ax6_x])
+    ax6.set_yticks(list(set(ax6_y)))
+else:
+    print(f'not executed')
 
 # for i in ax5_y:
 #     print(round(i / ax5_y[0], 3), end=", ")
@@ -371,3 +393,7 @@ ax6_y = []
 fig.tight_layout()
 plt.show()
 
+# 코드 실행 시간 측정
+end_time = time.time()
+
+print(f'실행 시간: {end_time - start_time}초')
