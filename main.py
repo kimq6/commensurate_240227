@@ -32,9 +32,9 @@ sigma_2d = 7
 sigma_3d = 7
 
 # 보여주기용 변수들
-ax_limit = 10  # 그래프 확대
-radius_cms = 5  # tip 원 반지름(cms)
-radius_inc = 5  # tip 원 반지름(inc)
+radius_cms = 10  # tip 원 반지름(cms)
+radius_inc = 10  # tip 원 반지름(inc)
+ax_limit = (radius_cms + lattice) * 1.2  # 그래프 확대
 
 # 1이 실행하는거
 cms_1D = 0
@@ -97,19 +97,45 @@ tip_x_cms_mesh, tip_y_cms_mesh = np.meshgrid(tip_base_cms, tip_base_cms)
 # ax2 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
 ax2.scatter(tip_x_cms_mesh, tip_y_cms_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
-# 원 안의 좌표만 고르기
+# # 원 안의 좌표만 고르기
 tip_cms_mesh_distance = np.sqrt(np.power(tip_x_cms_mesh, 2) + np.power(tip_y_cms_mesh, 2))
-tip_cms_mesh_in = tip_cms_mesh_distance.copy()
-tip_cms_mesh_out = tip_cms_mesh_distance.copy()
+tip_cms_mesh_distance[tip_cms_mesh_distance > radius_cms] = np.NaN
+tip_cms_mesh_distance[tip_cms_mesh_distance <= radius_cms] = 1
 
-for x in range(len(tip_base_cms)):
-    for y in range(len(tip_base_cms)):
-        if tip_cms_mesh_distance[x, y] > radius_cms:
-            tip_x_cms_mesh[x][y] = np.NaN
-            tip_y_cms_mesh[x][y] = np.NaN
+tip_x_cms_draw = tip_x_cms_mesh * tip_cms_mesh_distance
+tip_y_cms_draw = tip_y_cms_mesh * tip_cms_mesh_distance
+
+# tip_cms_mesh_in = tip_cms_mesh_distance.copy()
+# tip_cms_mesh_out = tip_cms_mesh_distance.copy()
+
+# for x in range(len(tip_base_cms)):
+#     for y in range(len(tip_base_cms)):
+#         if tip_cms_mesh_distance[x, y] > radius_cms:
+#             tip_x_cms_mesh[x][y] = np.NaN
+#             tip_y_cms_mesh[x][y] = np.NaN
+
+# tip_x_cms_list = [y for x in tip_x_cms_mesh for y in x]
+# tip_y_cms_list = [y for x in tip_y_cms_mesh for y in x]
+# tip_cms_distance_list = np.sqrt(np.power(tip_x_cms_list, 2) + np.power(tip_y_cms_list, 2))
+# for i, d in enumerate(tip_cms_distance_list):
+#     if d > radius_cms:
+#         tip_x_cms_list[i] = np.NaN
+#         tip_y_cms_list[i] = np.NaN
+
+# tip_x_cms_list = np.array(tip_x_cms_list)
+# tip_y_cms_list = np.array(tip_y_cms_list)
+# tip_x_cms_list = tip_x_cms_list[tip_x_cms_list != np.NaN]
+# tip_y_cms_list = tip_y_cms_list[tip_y_cms_list != np.NaN]
+
+# for i, x in enumerate(tip_x_cms_list):
+#     for j, y in enumerate(tip_y_cms_list):
+#         if np.sqrt(np.power(x, 2) + np.power(y, 2)) > radius_cms:
+#             tip_x_cms_list[i] = 0
+#             tip_y_cms_list[j] = 0
+
 
 # ax2 팁 그리기(빨강)
-ax2.scatter(tip_x_cms_mesh, tip_y_cms_mesh, c='r', s=10, marker='o')
+ax2.scatter(tip_x_cms_draw, tip_y_cms_draw, c='r', s=10, marker='o')
 
 # 2D mesh 생성(incommensurate)
 tip_x_inc_mesh, tip_y_inc_mesh = np.meshgrid(tip_base_inc, tip_base_inc)
@@ -143,6 +169,7 @@ for x in atom_base:
     for y in atom_base:
         atom_xy.append((x, y))
 
+"""
 # 계산하는 tip원자 순서쌍으로 구하기(2D cms)
 tip_x_cms_list = [y for x in tip_x_cms_mesh for y in x]
 tip_y_cms_list = [y for x in tip_y_cms_mesh for y in x]
@@ -160,7 +187,7 @@ tip_xy_inc_list = list(zip(tip_x_inc_list, tip_y_inc_list))
 tip_xy_inc_list_unduplicate = [x for x in tip_xy_inc_list if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...]
 # scatter 가능한 형태로 tip_x_y_inc_list[0]이 x좌표 모음, tip_x_y_inc_list[1]이 y좌표 모음이다.
 tip_x_y_inc_list = list(zip(*tip_xy_inc_list_unduplicate))  # [(x1,x2,x3,...)(y1,y2,y3,...)]
-
+"""
 
 def distance_2d(cor1, cor2):
     return np.sqrt(np.power((cor1[0]-cor2[0]), 2) + np.power((cor1[1]-cor2[1]), 2))
