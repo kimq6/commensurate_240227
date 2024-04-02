@@ -288,21 +288,19 @@ else:
 # z0 구하기
 print(f'2D commensurate', end=" >> ")
 if cms_2D == 1:
-    # 시간 오래 걸려서 이거 스킵하고 결과만 뒤로 전달
-    # z_0_2D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
-    # potential_min_2D_cms = 100000  # 최소인 potential 합 저장할곳
-    # for z_ in np.arange(3.39, 3.41, 0.0001):  # 이 범위에서 z반복
-    #     potential_sum = 0  # potential의 합 초기화
-    #     for tip in tip_xy_cms_draw:  # tip의 좌표들 [(x1,y1),(x2,y2),...] 형태
-    #         for xy in atom_xy:  # [(x1,y1), (x2,y2), ...]형태
-    #             # 그래핀 원자 좌표(xy[0], xy[1], 0)와 팁원자 좌표(tip[0], tip[1], z_)간의 potential을 함수로 구해서 누적
-    #             potential_sum += potential_3d((xy[0], xy[1], 0), (tip[0], tip[1], z_))
-    #     if potential_min_2D_cms > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-    #         z_0_2D_cms = z_  # z값 저장
-    # print(f'2D commensurate z0 = {round(z_0_2D_cms, 4)}, potential = {round(potential_min_2D_cms, 7)}')
-    # potential_min_2D_cms = potential_sum  # potential값 저장
-    # print(f'z0 tip atom = {len(tip_xy_cms_draw)}개')
-    z_0_2D_cms = 3.399  # 결과만 뒤로 전달
+    z_0_2D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
+    potential_min_2D_cms = 100000  # 최소인 potential 합 저장할곳
+    for z_ in np.arange(3.39, 3.41, 0.0001):  # 이 범위에서 z반복
+        potential_sum = 0  # potential의 합 초기화
+        for tip in tip_xy_cms_draw:  # tip의 좌표들 [(x1,y1),(x2,y2),...] 형태
+            for xy in atom_xy:  # [(x1,y1), (x2,y2), ...]형태
+                # 그래핀 원자 좌표(xy[0], xy[1], 0)와 팁원자 좌표(tip[0], tip[1], z_)간의 potential을 함수로 구해서 누적
+                potential_sum += potential_3d((xy[0], xy[1], 0), (tip[0], tip[1], z_))
+        if potential_min_2D_cms > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
+            z_0_2D_cms = z_  # z값 저장
+    print(f'2D commensurate z0 = {round(z_0_2D_cms, 4)}, potential = {round(potential_min_2D_cms, 7)}')
+    potential_min_2D_cms = potential_sum  # potential값 저장
+    print(f'z0 tip atom = {len(tip_xy_cms_draw)}개')
 
     ax6_x = []
     ax6_y = []

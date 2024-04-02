@@ -8,7 +8,7 @@ tip_lattice = 0.75
 
 atom_N_cms = 30  # 계산할 원자개수(어디까지)
 
-ax1_option = 1  # 0: 그냥 그리기, 1: 색상별로 그리기
+ax1_option = 0  # 0: 그냥 그리기, 1: 색상별로 그리기
 cycle = 4  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨
 
 plt.rcParams.update({'font.size': 24})

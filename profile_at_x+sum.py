@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 import save_graph
 
 # 여러 변수들, 단위 [Å]
-lattice = 0.5
-cms_lattice = 0.5
+atom_lattice = 2
+tip_lattice = 1.5
 atom_limit = 100
-create_base_cms = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
+create_base = 50  # 팁 원자를 얼마나 생성, 계산할지(cms) (네모꼴) (atom_N_cms 보다 크게)
 
 # 시그마 값
 sigma_2d = 3.5
 sigma_3d = 3.5
 
-atom_N_cms = 1  # 계산할 원자개수(1D) = 그릴 그래프 수
-graph_column = int(np.ceil(atom_N_cms / 2)) + 1
+atom_N = 5  # 계산할 원자개수(1D) = 그릴 그래프 수
+graph_column = int(np.ceil(atom_N / 2)) + 1
 print(f'asdf {graph_column}')
 
 fig = plt.figure(figsize=(15, 7.5))
@@ -22,33 +22,33 @@ ax0 = fig.add_subplot(2, graph_column, 1, title="1D")
 
 # 각 원자별 그래프
 axes = []
-for n in range(atom_N_cms):
+for n in range(atom_N):
     if n < graph_column - 1:
         ax = fig.add_subplot(2, graph_column, n + 2, title=f'{n + 1}th atom')
     else:
         ax = fig.add_subplot(2, graph_column, n + 3, title=f'{n + 1}th atom')
     axes.append(ax)
 
-radius_cms = (atom_N_cms - 1) / 2 * cms_lattice + 0.01  # tip 원 반지름(cms)
-print(radius_cms)
-radius_inc = radius_cms  # tip 원 반지름(inc)
-ax_limit = round(radius_inc * 1.2 + lattice)  # 그래프 확대 (보여주기)
+radius = (atom_N - 1) / 2 * tip_lattice + 0.01  # tip 원 반지름(cms)
+print(radius)
+radius_inc = radius  # tip 원 반지름(inc)
+ax_limit = round(radius_inc * 1.2 + atom_lattice)  # 그래프 확대 (보여주기)
 
 # 앞에 보이게 하려고 뒤에만듦
-ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N_cms} graph")
+ax_sum = fig.add_subplot(2, graph_column, graph_column + 1, title=f"sum of {atom_N} graph")
 
-print(f'atom_N_cms = {atom_N_cms}')
+print(f'atom_N = {atom_N}')
 
 ax0.set_xlim(-ax_limit, ax_limit)
 ax0.set_ylim(-ax_limit, ax_limit)
 # ax0.set_aspect("equal")
 
 # 격자 그리기 (파악하기 쉽게)
-ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_lattice)])
+ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, tip_lattice)])
 # ax1.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, inc_lattice)])
 
 # 좌표 베이스
-atom_base = [x * s for s in (1, -1) for x in np.arange(lattice / 2, atom_limit, lattice)]
+atom_base = [x * s for s in (1, -1) for x in np.arange(atom_lattice / 2, atom_limit, atom_lattice)]
 
 # 1D 그리기
 ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
@@ -67,17 +67,17 @@ ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
 # ax3.axis('off')
 
 # 팁 원자 베이스(commensurate)
-tip_base_cms = [x * s for x in np.arange(cms_lattice, create_base_cms, cms_lattice) for s in (1, -1)]
-tip_base_cms.insert(0, 0.0)
+tip_base_list = [x * s for x in np.arange(tip_lattice, create_base, tip_lattice) for s in (1, -1)]
+tip_base_list.insert(0, 0.0)
 
 # 팁 원자 베이스(incommensurate)
 # tip_base_inc = [x * s for x in np.arange(inc_lattice, create_base_inc, inc_lattice) for s in (1, -1)]
 # tip_base_inc.insert(0, 0.0)
 
 # ax0 팁 그리기
-ax0.scatter(tip_base_cms, [0 for x in tip_base_cms], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
-tip_base_cms_in = [x for x in tip_base_cms[0:atom_N_cms]]
-ax0.scatter(tip_base_cms_in, [0 for x in tip_base_cms_in], c='r', s=10, marker='o')  # 빨강
+ax0.scatter(tip_base_list, [0 for x in tip_base_list], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
+tip_base_in = [x for x in tip_base_list[0:atom_N]]
+ax0.scatter(tip_base_in, [0 for x in tip_base_in], c='r', s=10, marker='o')  # 빨강
 
 # ax1 팁 그리기
 # ax1.scatter(tip_base_inc, [0 for x in tip_base_inc], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
@@ -183,36 +183,36 @@ def potential_3d(cor1, cor2, d_ij=0.105, x_ij=3.851, sigma=sigma_3d):  # cor1, c
 
 
 # 특정 원자수에서 프로파일 뽑기
-tip_cms_in = [x for x in tip_base_cms[0:atom_N_cms]]  # 안에 있는 원자들만 고르기
-print(len(tip_cms_in), tip_cms_in)
+tip_in_list = [x for x in tip_base_list[0:atom_N]]  # 안에 있는 원자들만 고르기
+print(len(tip_in_list), tip_in_list)
 
 # 아니 이걸 반복하라고?
 print(f'1D commensurate', end=" >> ")
-z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
-potential_0_1D_cms = 100000
+z_0_1D = 0  # potential 합이 최소일 때 z값 저장할곳
+potential_0_1D = 100000
 for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
     potential_sum = 0
-    for tip in tip_cms_in:
+    for tip in tip_in_list:
         for x_ in atom_base:
             potential_sum += potential_2d((x_, 0), (tip, z_))
-    if potential_0_1D_cms > potential_sum:
-        z_0_1D_cms = z_
-        potential_0_1D_cms = potential_sum
-print(f'z0 = {z_0_1D_cms}')
+    if potential_0_1D > potential_sum:
+        z_0_1D = z_
+        potential_0_1D = potential_sum
+print(f'z0 = {z_0_1D}')
 
 # 합 저장할 리스트
 x_step = 0.01
-ax_sum_potential = [0.0 for x in np.arange(0, lattice, x_step)]
-ax_x = [x for x in np.arange(0, lattice, x_step)]
+ax_sum_potential = [0.0 for x in np.arange(0, atom_lattice, x_step)]
+ax_x = [x for x in np.arange(0, atom_lattice, x_step)]
 
 # tip의 한 원자에 대해서만 프로파일 구하기
-for i_tip, tip in enumerate(tip_cms_in):
+for i_tip, tip in enumerate(tip_in_list):
     potential_sums = []
     for i, x_move in enumerate(ax_x):  # 옆으로 조금씩 움직이면서 반복
         potential_sum = 0.0  # potential 합 초기화
         for x_ in atom_base:  # 원자의 좌표들
             # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-            potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_cms))
+            potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D))
         # ax_x.append(x_move)
         potential_sums.append(potential_sum)
         ax_sum_potential[i] += potential_sum
@@ -224,5 +224,5 @@ print(max(ax_sum_potential), min(ax_sum_potential))
 print((max(ax_sum_potential) + min(ax_sum_potential)) / 2)
 ax_sum.text(0.0, (max(ax_sum_potential) + min(ax_sum_potential)) / 2, f'potential barrier\n{max(ax_sum_potential) - min(ax_sum_potential)}', horizontalalignment='left', verticalalignment='center')
 
-save_graph.save_graph(f'{atom_N_cms}atom_{sigma_2d}σ, {lattice}-{cms_lattice}')
+save_graph.save_graph(f'{atom_N}atom_{sigma_2d}σ, {atom_lattice}-{tip_lattice}')
 plt.show()

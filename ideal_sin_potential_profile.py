@@ -9,7 +9,7 @@ atom_base = 50
 tip_base = 30
 
 atom_N_cms = 4  # 계산할 원자개수
-z_0 = 0
+z_0 = 3.4
 
 graph_column = int(np.ceil(atom_N_cms / 2)) + 1
 

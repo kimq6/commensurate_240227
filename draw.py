@@ -2,18 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 fig = plt.figure(figsize=(15, 7.5))
-ax0 = fig.add_subplot(241, title="1D commensurate")
+ax0 = fig.add_subplot(141, title="1D commensurate")
 # plt.grid(axis='x')
-ax1 = fig.add_subplot(242, title="1D incommensurate")
+ax1 = fig.add_subplot(142, title="1D incommensurate")
 # plt.grid(axis='x')
-ax2 = fig.add_subplot(243, title="2D commensurate")
-ax3 = fig.add_subplot(244, title="2D incommensurate")
-ax4 = fig.add_subplot(245, title="1D commensurate")
-# plt.grid()
-ax5 = fig.add_subplot(246, title="1D incommensurate")
-# plt.grid()
-ax6 = fig.add_subplot(247, title="2D commensurate")
-ax7 = fig.add_subplot(248, title="2D incommensurate")
+ax2 = fig.add_subplot(143, title="2D commensurate")
+ax3 = fig.add_subplot(144, title="2D incommensurate")
+# ax4 = fig.add_subplot(245, title="1D commensurate")
+# ax5 = fig.add_subplot(246, title="1D incommensurate")
+# ax6 = fig.add_subplot(247, title="2D commensurate")
+# ax7 = fig.add_subplot(248, title="2D incommensurate")
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
