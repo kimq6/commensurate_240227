@@ -24,8 +24,10 @@ atom_limit = 100
 create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms)
 create_base_inc = 30  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
+cycle = 3
+
 # 시그마 값
-sigma_2d = 4.5
+sigma_2d = 6.5
 sigma_3d = 3.5
 
 ax_limit = 15  # 그래프 확대 (보여주기)
@@ -231,7 +233,6 @@ for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
         potential_0_1D_inc = potential_sum
 print(f'z0 = {z_0_1D_inc}')
 
-cycle = 3
 for remain in range(cycle):
     ax5_x = []
     ax5_y = []
