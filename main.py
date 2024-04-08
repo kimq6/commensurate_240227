@@ -353,16 +353,11 @@ else:
 
 # 이미지 저장
 if is_save == 'y':
-    today = time.strftime("%y%m%d")
-    save_graph.save_graph(f'main_{today}_lattice={lattice}-{cms_lattice}-{inc_lattice}_atom={atom_limit}')
-    print('graph saved')
-else:
-    print('graph not saved')
-
-fig.tight_layout()
-plt.show()
+    save_graph.save_graph(f'main_lattice={lattice}-{cms_lattice}-{inc_lattice}_atom={atom_limit}')
 
 # 코드 실행 시간 측정
 end_time = time.time()
+print(f'실행 시간: {round(end_time - start_time)}초')
 
-print(f'실행 시간: {end_time - start_time}초')
+fig.tight_layout()
+plt.show()
