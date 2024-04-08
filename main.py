@@ -1,6 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import save_graph
+
+# 이미지 저장할지 여부
+is_save = input('Save image? (y/n): ')
+if is_save == 'y':
+    print('저장함')
+else:
+    print('저장하지 않음')
 
 # 코드 실행 시간 측정
 start_time = time.time()
@@ -42,8 +50,8 @@ ax_limit = (radius_cms + lattice) * 1.2  # 그래프 확대
 
 # 1이 실행하는거
 cms_1D = 0
-inc_1D = 0
-cms_2D = 1
+inc_1D = 1
+cms_2D = 0
 inc_2D = 0
 
 for n in range(0,4):
@@ -343,50 +351,13 @@ if cms_2D == 1:
 else:
     print(f'not executed')
 
-# for i in ax5_y:
-#     print(round(i / ax5_y[0], 3), end=", ")
-# print(f'1D incommensurate end')
-#     ax5_x = []
-#     ax5_y = []
-#     for radius in np.arange(1, create_base_inc, inc_lattice):
-#         tip_inc_in = [x for x in tip_base_inc if abs(x) < radius]
-#         # z0 구하기(1D_inc)
-#         z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
-#         potential_min_1D_inc = 100000  # 최소인 potential 합 저장할곳
-#         for z_ in np.arange(3.6, 3.8, 0.001):  # 이 범위에서 z반복
-#             potential_sum = 0  # potential의 합 초기화
-#             for tip in tip_inc_in:  # tip의 좌표들
-#                 for x_ in atom_base:  # 원자의 좌표들
-#                     potential_sum += potential_2d((x_, 0), (tip, z_))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-#             # ax4.scatter(z_, potential_sum, c='b', s=1)
-#             if potential_min_1D_inc > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-#                 z_0_1D_inc = z_  # z값 저장
-#                 potential_min_1D_inc = potential_sum  # potential값 저장
-#         print(f'r = {radius}, 1D incommensurate z0 = {round(z_0_1D_inc, 6)}, potential = {potential_min_1D_inc}')
-#         potential_min_1D_inc_move = 100000
-#         x_move_min = 0
-#         x_move_max = 0
-#         potential_sums = []
-#         for x_move in np.arange(0, lattice, 0.1):  # 옆으로 조금씩 움직이면서 반복
-#             potential_sum = 0  # potential 합 초기화
-#             for tip in tip_inc_in:  # tip의 좌표들
-#                 for x_ in atom_base:  # 원자의 좌표들
-#                     potential_sum += potential_2d((x_, 0), (tip + x_move, z_0_1D_inc))  # i번째 그래핀 원자와 팁원자(0, 0, z)간의 potential을 함수로 구해서 누적
-#             potential_sums.append(potential_sum)
-#         difference = max(potential_sums) - min(potential_sums)
-#         # if potential_min_1D_inc_move > potential_sum:  # 여태까지의 최소값이 구한 값보다 크다면(최솟값을 갱신하면)
-#         #     x_potential = x_move  # x값 저장
-#         #     potential_min_1D_inc = potential_sum  # potential값 저장
-#         ax5_x.append(radius - 1)
-#         ax5_y.append(difference)
-#         print(f"max = {max(potential_sums)}, min = {min(potential_sums)}, difference = {difference}")
-#         # ax5.annotate(round(max(potential_sums) - min(potential_sums), 5), (radius, max(potential_sums) - min(potential_sums)))
-#     ax5.plot(ax5_x, ax5_y, linestyle = '--', marker = 'o')
-#     ax5.set_xticks([round(x, 4) for x in ax5_x])
-#     ax5.set_yticks(list(set(ax5_y)))
-#     for i in ax5_y:
-#         print(round(i / ax5_y[0], 3))
-
+# 이미지 저장
+if is_save == 'y':
+    today = time.strftime("%y%m%d")
+    save_graph.save_graph(f'main_{today}_lattice={lattice}-{cms_lattice}-{inc_lattice}_atom={atom_limit}')
+    print('graph saved')
+else:
+    print('graph not saved')
 
 fig.tight_layout()
 plt.show()

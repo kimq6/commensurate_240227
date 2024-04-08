@@ -8,7 +8,7 @@ ax0 = fig.add_subplot(111)
 atom_lattice = 2
 tip_lattice = 1.5
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
-radius_multiple = 6
+radius_multiple = 22
 radius = tip_lattice * radius_multiple  # tip 원 반지름
 
 # 그래프 확대
