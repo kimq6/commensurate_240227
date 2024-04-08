@@ -6,9 +6,9 @@ fig = plt.figure(figsize=(15, 7.5))
 ax0 = fig.add_subplot(111)
 
 atom_lattice = 2
-tip_lattice = 1.5
+tip_lattice = 2
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
-radius_multiple = 36
+radius_multiple = 10
 radius = tip_lattice * radius_multiple  # tip 원 반지름
 
 # 그래프 확대
