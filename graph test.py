@@ -1,30 +1,98 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-x = np.linspace(0, 2*np.pi, 100)  # 0부터 2π까지의 범위에서 100개의 값 생성
-y = np.zeros_like(x)  # x와 같은 크기의 0으로 이루어진 배열 생성
+plt.figure(figsize=(15, 7.5))
 
-# x_ = np.linspace(0, 2*np.pi, 1000)  # 0부터 2π까지의 범위에서 1000개의 값 생성
-random_values = [2*np.pi*x for x in np.random.rand(1000000)]  # 생성된 값 중에서 랜덤하게 100개 선택
-# print(random_values)
-mean_random_values = np.mean(random_values)
-print(np.mean(random_values))
-print(np.std(random_values))
+# 임의의 리스트 생성
+x = [x for x in np.arange(0, 55, 1.5)]
+y = [0.0554768005404096,
+     0.16636343946809706,
+     0.16636343946811216,
+     0.16643040162116307,
+     0.16629647731510744,
+     0.3881367173186163,
+     0.38827064162532565,
+     0.1664304016234439,
+     0.3880697551597905,
+     0.6100439195075182,
+     0.6100439194950127,
+     0.16643040162131228,
+     0.3882036794926762,
+     0.6100439195040508,
+     0.831817197379678,
+     0.16629647733986985,
+     0.388203679495291,
+     0.8319511216648152,
+     1.0537243994981509,
+     0.38833760388047267,
+     0.38806975504780894,
+     0.6099099954751637,
+     1.0537243997880523,
+     0.3884715280387354,
+     0.6098430330530391,
+     0.8316832728946792,
+     1.0538583237221246,
+     0.609976957372055,
+     1.0536574372963514,
+     0.8318171973905919,
+     0.8318171973987774,
+     0.39046448884619167,
+     1.0537913616981314,
+     0.8320850462287126,
+     1.4972709551175285,
+     0.6101108810589722,
+     0.8317502355221222]
 
-average_y = np.zeros_like(x)  # x와 같은 크기의 0으로 이루어진 배열 생성
-# 각각의 위상에 대해 사인 함수를 계산하고 더함
-for theta in random_values:  # theta는 라디안 단위
-    y += np.sin(x + theta)
+x_r = [1,
+5,
+13,
+29,
+49,
+81,
+113,
+149,
+197,
+253,
+317,
+377,
+441,
+529,
+613,
+709,
+797,
+901,
+1009,
+1129,
+1257,
+1373,
+1517,
+1653,
+1793,
+1961,
+2121,
+2289,
+2453,
+2629,
+2821,
+3001,
+3209,
+3409,
+3625,
+3853,
+4053]
 
-y_max_index = np.argmax(y)
-y_min_index = np.argmin(y)
+x_c = [x for i, x in enumerate(x) if i % 4 == 2]
+y_c = [y for i, y in enumerate(y) if i % 4 == 2]
 
-print(f'y_max : ({x[y_max_index]:.4f}, {y[y_max_index]:.4f})\ny_min : ({x[y_min_index]:.4f}, {y[y_min_index]:.4f})')
-print(f'barrier : {y[y_max_index] - y[y_min_index]:.4f}')
-
-plt.plot(x, y)
-plt.title('Sum of sin(x + theta)')
-plt.xlabel('x')
-plt.ylabel('Sum of sin(x + theta)')
-plt.grid(True)
-plt.show()
+# 그래프 그리기
+# plt.plot(x, y, marker='o', markersize=10, linestyle='--')
+# plt.plot(x_c, y_c, marker='o', markersize=10, linestyle='--')
+plt.plot(x_r, y, marker='o', markersize=10, linestyle='--')
+plt.title('omo')  # 그래프 제목 설정
+plt.xlabel('x')  # x축 레이블 설정
+plt.ylabel('y')  # y축 레이블 설정
+# plt.xticks(x)  # x축 눈금 설정
+plt.yticks([round(y, 4) for y in y])  # y축 눈금 설정
+plt.grid(True)  # 그리드 표시
+plt.tight_layout()  # 그래프 여백 최적화
+plt.show()  # 그래프 보여주기
