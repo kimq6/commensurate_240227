@@ -1,47 +1,31 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import time
-import save_graph
 
-# 이미지 저장할지 여부
-is_save = input('Save image? (y/n): ')
-if is_save == 'y':
-    print('저장함')
-else:
-    print('저장하지 않음')
 
-# 코드 실행 시간 측정
-start_time = time.time()
+# 그림용
+plt.rcParams['font.size'] = 30
 
 fig = plt.figure(figsize=(15, 7.5))
-ax0 = fig.add_subplot(241, title="1D commensurate")
-# plt.grid(axis='x')
-ax1 = fig.add_subplot(242, title="1D incommensurate")
-# plt.grid(axis='x')
-ax2 = fig.add_subplot(243, title="2D commensurate")
-ax3 = fig.add_subplot(244, title="2D incommensurate")
-ax4 = fig.add_subplot(245, title="1D commensurate")
+ax4 = fig.add_subplot(121, title="1D commensurate")
 # plt.grid()
-ax5 = fig.add_subplot(246, title="1D incommensurate")
+ax5 = fig.add_subplot(122, title="1D incommensurate")
 # plt.grid()
-ax6 = fig.add_subplot(247, title="2D commensurate")
-ax7 = fig.add_subplot(248, title="2D incommensurate")
 
 # 여러 변수들, 단위 [Å]
 lattice = 2
 cms_lattice = 2
 inc_lattice = 1.5
-atom_limit = 30
-create_base_cms = 10  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 10  # 팁 원자를 얼마나 생성, 계산할지(inc)
+atom_limit = 50
+create_base_cms = 8  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 8  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 # parameter
 x_cc = 3.851  # carbon-carbon distance
 d_cc = 0.105  # carbon-carbon potential
 
 # cutoff
-sigma_2d = 5
-sigma_3d = 5
+sigma_2d = 6
+sigma_3d = 6
 
 # 보여주기용 변수들
 radius_cms = 5  # tip 원 반지름(cms)
@@ -49,38 +33,20 @@ radius_inc = 5  # tip 원 반지름(inc)
 ax_limit = (radius_cms + lattice) * 1.2  # 그래프 확대
 
 # 1이 실행하는거
-cms_1D = 0
-inc_1D = 0
-cms_2D = 1
+cms_1D = 1
+inc_1D = 1
+cms_2D = 0
 inc_2D = 0
 
-for n in range(0,4):
-    exec(f'ax{n}.set_xlim(-ax_limit, ax_limit)')
-    exec(f'ax{n}.set_ylim(-ax_limit, ax_limit)')
-    exec(f'ax{n}.set_aspect("equal")')
-
 # 격자 그리기 (파악하기 쉽게)
-ax0.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, cms_lattice)])
-ax1.set_xticks([x * s for s in (1, -1) for x in np.arange(0, ax_limit, inc_lattice)])
 
 # 좌표 베이스
 atom_base = [x * s for s in (1, -1) for x in np.arange(lattice / 2, atom_limit, lattice)]
 
 # 1D 그리기
-ax0.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
-# ax0.axis('off')
-
-ax1.scatter(atom_base, [0 for x in atom_base], c='k', s=3)
-# ax1.axis('off')
 
 # 2D 그리기
 atom_x_mesh, atom_y_mesh = np.meshgrid(atom_base, atom_base)
-
-ax2.scatter(atom_x_mesh, atom_y_mesh, c='k', s=3)
-# ax2.axis('off')
-
-ax3.scatter(atom_x_mesh, atom_y_mesh, c='k', s=3)
-# ax3.axis('off')
 
 # 팁 원자 베이스(commensurate)
 tip_base_cms = [x * s for x in np.arange(cms_lattice, create_base_cms, cms_lattice) for s in (1, -1)]
@@ -91,20 +57,13 @@ tip_base_inc = [x * s for x in np.arange(inc_lattice, create_base_inc, inc_latti
 tip_base_inc.insert(0, 0.0)
 
 # ax0 팁 그리기
-ax0.scatter(tip_base_cms, [0 for x in tip_base_cms], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
-tip_base_cms_in = [x for x in tip_base_cms if abs(x) < radius_cms]
-ax0.scatter(tip_base_cms_in, [0 for x in tip_base_cms_in], c='r', s=10, marker='o')  # 빨강
 
 # ax1 팁 그리기
-ax1.scatter(tip_base_inc, [0 for x in tip_base_inc], c='pink', s=10, marker='o', alpha=0.5)  # 분홍
-tip_base_inc_in = [x for x in tip_base_inc if abs(x) < radius_inc]
-ax1.scatter(tip_base_inc_in, [0 for x in tip_base_inc_in], c='r', s=10, marker='o')  # 빨강
 
 # 2D mesh생성(commensurate)
 tip_x_cms_mesh, tip_y_cms_mesh = np.meshgrid(tip_base_cms, tip_base_cms)
 
 # ax2 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
-ax2.scatter(tip_x_cms_mesh, tip_y_cms_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
 # 원 안의 좌표만 고르기
 # 원점으로부터의 거리를 계산한 행렬
@@ -125,13 +84,11 @@ tip_xy_cms_draw = list(zip(tip_x_cms_draw_list, tip_y_cms_draw_list))
 tip_xy_cms_draw = [x for x in tip_xy_cms_draw if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...](그림에 그려진 tip 원자 개수만큼)
 
 # ax2 팁 그리기(빨강)
-ax2.scatter(tip_x_cms_draw, tip_y_cms_draw, c='r', s=10, marker='o')
 
 # 2D mesh 생성(incommensurate)
 tip_x_inc_mesh, tip_y_inc_mesh = np.meshgrid(tip_base_inc, tip_base_inc)
 
 # ax3 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
-ax3.scatter(tip_x_inc_mesh, tip_y_inc_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
 # 원 안의 좌표만 고르기
 # 원점으로부터의 거리를 계산한 행렬
@@ -152,7 +109,6 @@ tip_xy_inc_draw = list(zip(tip_x_inc_draw_list, tip_y_inc_draw_list))
 tip_xy_inc_draw = [x for x in tip_xy_inc_draw if not np.isnan(x[0])]  # [(x1,y1),(x2,y2),...](그림에 그려진 tip 원자 개수만큼)
 
 # ax3 팁 그리기(빨강)
-ax3.scatter(tip_x_inc_draw, tip_y_inc_draw, c='r', s=10, marker='o')
 
 # mesh한 원자 좌표 보기 편하게(순서쌍으로) 바꾸기(1D)
 atom_x = []  # 원자 좌표가 보기 편한 [(x1,0), (x2,0), ...]형태로 되어있음
@@ -214,16 +170,18 @@ def potential_3d(cor1, cor2, d_ij=d_cc, x_ij=x_cc, sigma=sigma_3d):  # cor1, cor
 print(f'1D commensurate', end=" >> ")
 if cms_1D == 1:
     z_0_1D_cms = 0  # potential 합이 최소일 때 z값 저장할곳
-    potential_0_1D_cms = 100000
-    for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
-        potential_sum = 0
-        for tip in tip_base_cms:
-            for x_ in atom_base:
-                potential_sum += potential_2d((x_, 0), (tip, z_))
-        if potential_0_1D_cms > potential_sum:
-            z_0_1D_cms = z_
-            potential_0_1D_cms = potential_sum
-    print(f'z0 = {z_0_1D_cms}')
+    # potential_0_1D_cms = 100000
+    # for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
+    #     potential_sum = 0
+    #     for tip in tip_base_cms:
+    #         for x_ in atom_base:
+    #             potential_sum += potential_2d((x_, 0), (tip, z_))
+    #     if potential_0_1D_cms > potential_sum:
+    #         z_0_1D_cms = z_
+    #         potential_0_1D_cms = potential_sum
+    # print(f'z0 = {z_0_1D_cms}')
+
+    z_0_1D_cms = 3.633
 
     ax4_x = []
     ax4_y = []
@@ -253,17 +211,19 @@ else:
 # inc
 print(f'1D incommensurate', end=" >> ")
 if inc_1D == 1:
-    z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
-    potential_0_1D_inc = 100000
-    for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
-        potential_sum = 0
-        for tip in tip_base_inc:
-            for x_ in atom_base:
-                potential_sum += potential_2d((x_, 0), (tip, z_))
-        if potential_0_1D_inc > potential_sum:
-            z_0_1D_inc = z_
-            potential_0_1D_inc = potential_sum
-    print(f'z0 = {z_0_1D_inc}')
+#     z_0_1D_inc = 0  # potential 합이 최소일 때 z값 저장할곳
+#     potential_0_1D_inc = 100000
+#     for z_ in np.arange(3.5, 3.7, 0.001):  # 이 범위에서 z반복
+#         potential_sum = 0
+#         for tip in tip_base_inc:
+#             for x_ in atom_base:
+#                 potential_sum += potential_2d((x_, 0), (tip, z_))
+#         if potential_0_1D_inc > potential_sum:
+#             z_0_1D_inc = z_
+#             potential_0_1D_inc = potential_sum
+#     print(f'z0 = {z_0_1D_inc}')
+    
+    z_0_1D_inc = 3.633
 
     ax5_x = []
     ax5_y = []
@@ -345,19 +305,11 @@ if cms_2D == 1:
         ax6_x.append(radius)
         ax6_y.append(difference)
         print(f"radius = {radius}, max = {max(potential_sums)}, min = {min(potential_sums)}, difference = {difference}")
-    ax6.plot(ax6_x, ax6_y, linestyle = '--', marker = 'o')
-    ax6.set_xticks([round(x, 4) for x in ax6_x])
-    ax6.set_yticks(list(set(ax6_y)))
+    # ax6.plot(ax6_x, ax6_y, linestyle = '--', marker = 'o')
+    # ax6.set_xticks([round(x, 4) for x in ax6_x])
+    # ax6.set_yticks(list(set(ax6_y)))
 else:
     print(f'not executed')
-
-# 이미지 저장
-if is_save == 'y':
-    save_graph.save_graph(f'main_lattice={lattice}-{cms_lattice}-{inc_lattice}_atom={atom_limit}')
-
-# 코드 실행 시간 측정
-end_time = time.time()
-print(f'실행 시간: {round(end_time - start_time)}초')
 
 fig.tight_layout()
 plt.show()

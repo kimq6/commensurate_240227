@@ -20,9 +20,9 @@ ax7 = fig.add_subplot(248, title="2D incommensurate")
 lattice = 2
 cms_lattice = 2
 inc_lattice = 4 / 3
-atom_limit = 100
-create_base_cms = 30  # 팁 원자를 얼마나 생성, 계산할지(cms)
-create_base_inc = 30  # 팁 원자를 얼마나 생성, 계산할지(inc)
+atom_limit = 50
+create_base_cms = 15  # 팁 원자를 얼마나 생성, 계산할지(cms)
+create_base_inc = 15  # 팁 원자를 얼마나 생성, 계산할지(inc)
 
 cycle = 3
 

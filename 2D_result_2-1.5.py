@@ -87,6 +87,7 @@ y_c = [y for i, y in enumerate(y) if i % 4 == 2]
 # 그래프 그리기
 # plt.plot(x, y, marker='o', markersize=10, linestyle='--')
 # plt.plot(x_c, y_c, marker='o', markersize=10, linestyle='--')
+
 plt.plot(x_r, y, marker='o', markersize=10, linestyle='--')
 plt.title('omo')  # 그래프 제목 설정
 plt.xlabel('x')  # x축 레이블 설정

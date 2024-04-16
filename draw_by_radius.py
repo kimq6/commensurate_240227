@@ -6,9 +6,9 @@ fig = plt.figure(figsize=(15, 7.5))
 ax0 = fig.add_subplot(111)
 
 atom_lattice = 2
-tip_lattice = 2
+tip_lattice = 1.5
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
-radius_multiple = 10
+radius_multiple = 3
 radius = tip_lattice * radius_multiple  # tip 원 반지름
 
 # 그래프 확대
@@ -26,13 +26,13 @@ tip_base.insert(0, 0.0)  # tip 중심
 
 # 2D atom mesh
 atom_x_mesh, atom_y_mesh = np.meshgrid(atom_base, atom_base)
-ax0.scatter(atom_x_mesh, atom_y_mesh, c='k', s=3)
+ax0.scatter(atom_x_mesh, atom_y_mesh, c='k', s=30)  # 검정
 
 # 2D tip mesh
 tip_x_mesh, tip_y_mesh = np.meshgrid(tip_base, tip_base)
 
 # ax2 팁 그리기(분홍) (tip_mesh를 한번만 쓰고 변경하기 때문에 미리 그린다.)
-ax0.scatter(tip_x_mesh, tip_y_mesh, c='pink', s=10, marker='o', alpha=0.5)
+# ax0.scatter(tip_x_mesh, tip_y_mesh, c='pink', s=10, marker='o', alpha=0.5)
 
 # 원 안의 좌표만 고르기
 tip_cms_mesh_distance = np.sqrt(np.power(tip_x_mesh, 2) + np.power(tip_y_mesh, 2))  # 원점으로부터의 거리를 계산한 행렬
@@ -45,10 +45,12 @@ for x in range(len(tip_base)):
             tip_y_mesh[x][y] = np.NaN
 
 # ax2 팁 그리기(빨강)
-ax0.scatter(tip_x_mesh, tip_y_mesh, c='r', s=10, marker='o')
+ax0.scatter(tip_x_mesh, tip_y_mesh, c='r', s=30, marker='o')
 
 tip_circle = patches.Circle((0, 0), radius, color='r', fill=False)
 ax0.add_patch(tip_circle)
+
+
 
 # 계산하는 tip원자 순서쌍으로 구하기
 tip_x_list = [y for x in tip_x_mesh for y in x]
