@@ -5,15 +5,15 @@ from tqdm import tqdm
 # 초기 설정
 atom_lattice = 2  # atom_lattice 값 수정
 tip_lattice = 1.5 # tip_lattice 값 수정
-atom_limit = 55  # radius_multiple와 tip_lattice 곱보다 큰 숫자
-radiuses = np.arange(0, atom_limit, tip_lattice)  # 반지름을 1부터 n까지 변화시킬 예정, 원하는 반지름은 수정가능
+atom_limit = 20  # radius_multiple와 tip_lattice 곱보다 큰 숫자
+radiuses = np.arange(0, atom_limit, 0.1)  # 반지름을 1부터 n까지 변화시킬 예정, 원하는 반지름은 수정가능
 
 # 함수 정의
 def potential_at_xy(x, y, B, λ):
     return B * (np.cos(np.pi * 2 * x / λ) + np.cos(np.pi * 2 * y / λ))
 
 
-B = 0.01  # 적절한 B 값 설정
+B = 1/4  # 적절한 B 값 설정
 λ = atom_lattice
 
 potential_barrier = []  # 각 반경에서의 최대-최소 잠재 에너지를 저장할 리스트
@@ -45,12 +45,23 @@ for radius in tqdm(radiuses, desc='Calculating max-min potentials'):
 
     potential_barrier.append(max_z_value_sum - min_z_value_sum)  # potential_barrier에 max_z_value_sum과 min_z_value_sum의 차이를 저장
 
+# x축 깔끔하게 표시하기
+# potential_barrier의 변화를 계산
+changes = np.abs(np.diff(potential_barrier))
+# 변화가 큰 임계값 설정
+threshold = 0.02  # 이 값보다 더 큰 변화인 경우
+# 변화가 임계값보다 큰 경우의 인덱스 찾기
+large_change_indices = np.where(changes > threshold)[0]
+# 해당하는 radiuses 값 추출
+large_change_radiuses = [radiuses[i+1] for i in large_change_indices]
+print(large_change_radiuses)
+
 # 그래프 그리기
 plt.figure(figsize=(10, 6))
 plt.plot(radiuses, potential_barrier, marker='o')
 plt.xlabel('Radius')
 plt.ylabel('Max-Min Potential')
-plt.xticks(radiuses)
+plt.xticks(large_change_radiuses)
 plt.yticks(potential_barrier)
 plt.title('Radius vs. Max-Min Potential')
 plt.grid(True)
