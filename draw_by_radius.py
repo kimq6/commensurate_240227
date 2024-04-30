@@ -8,14 +8,9 @@ ax0 = fig.add_subplot(111)
 atom_lattice = 2
 tip_lattice = 1.5
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
-radius_multiple = 3
-radius = tip_lattice * radius_multiple  # tip 원 반지름
-
-# 그래프 확대
-ax_limit = (radius + atom_lattice) * 1.2
-ax0.set_xlim(-ax_limit, ax_limit)
-ax0.set_ylim(-ax_limit, ax_limit)
-ax0.set_aspect('equal')
+# radius_multiple = 3
+# radius = tip_lattice * radius_multiple  # tip 원 반지름
+radius = 3.5
 
 # atom 좌표 베이스
 atom_base = [x * s for s in (1, -1) for x in np.arange(atom_lattice / 2, atom_limit, atom_lattice)]
@@ -61,5 +56,13 @@ tip_xy_list_unduplicate = [x for x in tip_xy_list if not np.isnan(x[0])]  # [(x1
 print(len(tip_xy_list_unduplicate))
 
 ax0.set_title(f'2D atom and tip\natom = {atom_lattice}, tip = {tip_lattice}, radius = {radius}, atom number = {len(tip_xy_list_unduplicate)}')
+
+ax0.set_xticks(atom_base)
+ax0.set_yticks(atom_base)
+# 그래프 확대
+ax_limit = (radius + atom_lattice) * 1.2
+ax0.set_xlim(-ax_limit, ax_limit)
+ax0.set_ylim(-ax_limit, ax_limit)
+ax0.set_aspect('equal')
 
 plt.show()
