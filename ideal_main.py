@@ -4,9 +4,9 @@ import matplotlib.cm as cm
 
 # 여러 변수
 lattice = 2
-tip_lattice = np.sqrt(2)
+tip_lattice = 3
 
-atom_N_cms = 100  # 계산할 원자개수(어디까지)
+atom_N_cms = 20  # 계산할 원자개수(어디까지)
 
 ax1_option = 0  # 0: 그냥 그리기, 1: 색상별로 그리기
 cycle = 4  # ax1_option = 1일 때 색상 개수. 잘 나누면 일정한 값이 됨

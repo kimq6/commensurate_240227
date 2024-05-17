@@ -50,8 +50,8 @@ ax_limit = (radius_cms + lattice) * 1.2  # 그래프 확대
 
 # 1이 실행하는거
 cms_1D = 0
-inc_1D = 0
-cms_2D = 1
+inc_1D = 1
+cms_2D = 0
 inc_2D = 0
 
 for n in range(0,4):
