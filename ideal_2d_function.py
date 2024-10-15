@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 # 변수 (tip_lattice)
-tip_lattice = 3.83
+tip_lattice = 3.8
 sample_lattice = 4.0
 
 # 격자 potential을 계산하는 함수
@@ -20,12 +20,12 @@ def potential_sum(tip_boundary, move_x, move_y):
     x_tip, y_tip = np.meshgrid(x_values, y_values)
 
     # 조건 계산
-    # condition_array = np.sqrt(x_tip**2 + y_tip**2)
-    condition_array = np.abs(x_tip) + np.abs(y_tip)
+    condition_array = np.sqrt(x_tip**2 + y_tip**2)  # 원
+    # condition_array = np.abs(x_tip) + np.abs(y_tip)  # 마름모
 
     # mask_array: 조건에 맞으면 True, 아니면 False
-    mask_array = condition_array <= tip_boundary
-    # mask_array = 
+    mask_array = condition_array <= tip_boundary  # 원이나 마름모
+    # mask_array = np.ones_like(x_tip, dtype=bool)  # 네모
 
     # move_x와 move_y를 각각 x_tip과 y_tip에 더함
     x_tip = x_tip + move_x
