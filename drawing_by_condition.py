@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 변수
-tip_boundary = 3
+tip_boundary_index = 3
 tip_lattice = 3.83
 sample_lattice = 4.0
+tip_boundary = tip_boundary_index * tip_lattice
 
 # 1차원 x좌표와 y좌표 배열 생성
-x_values = np.arange(-tip_boundary, tip_boundary + 1) * tip_lattice
-y_values = np.arange(tip_boundary, -tip_boundary - 1, -1) * tip_lattice
+x_values = np.arange(-tip_boundary, tip_boundary + tip_lattice, tip_lattice)
+y_values = np.arange(tip_boundary, -tip_boundary - tip_lattice, -tip_lattice)
 
 # 2차원 격자 형태의 x좌표와 y좌표 배열 생성
 x_tip, y_tip = np.meshgrid(x_values, y_values)
@@ -17,7 +18,7 @@ x_tip, y_tip = np.meshgrid(x_values, y_values)
 condition_array = np.abs(x_tip) + np.abs(y_tip)
 
 # mask_array: 조건에 맞으면 True, 아니면 False
-mask_array = condition_array <= tip_boundary * tip_lattice
+mask_array = condition_array <= tip_boundary
 
 # 그래프 그리기
 plt.figure(figsize=(8, 8))
