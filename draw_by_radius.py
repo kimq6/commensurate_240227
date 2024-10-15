@@ -10,7 +10,7 @@ tip_lattice = 1.5
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
 # radius_multiple = 3
 # radius = tip_lattice * radius_multiple  # tip 원 반지름
-radius = 20
+radius = 50
 
 # atom 좌표 베이스
 atom_base = [x * s for s in (1, -1) for x in np.arange(atom_lattice / 2, atom_limit, atom_lattice)]
@@ -21,7 +21,7 @@ tip_base.insert(0, 0.0)  # tip 중심
 
 # 2D atom mesh
 atom_x_mesh, atom_y_mesh = np.meshgrid(atom_base, atom_base)
-ax0.scatter(atom_x_mesh, atom_y_mesh, c='#0070c0', s=100)  # 검정
+ax0.scatter(atom_x_mesh, atom_y_mesh, c='#0070c0', s=10)  # 검정
 
 # 2D tip mesh
 tip_x_mesh, tip_y_mesh = np.meshgrid(tip_base, tip_base)
@@ -40,7 +40,7 @@ for x in range(len(tip_base)):
             tip_y_mesh[x][y] = np.NaN
 
 # ax2 팁 그리기(빨강)
-ax0.scatter(tip_x_mesh, tip_y_mesh, c='r', s=100, marker='o')
+ax0.scatter(tip_x_mesh, tip_y_mesh, c='r', s=10, marker='o')
 
 # 원 그리기
 tip_circle = patches.Circle((0, 0), radius, color='r', fill=False)
