@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 변수
-tip_boundary = 20
+tip_boundary = 3
 tip_lattice = 3.83
 sample_lattice = 4.0
 
@@ -26,7 +26,7 @@ plt.scatter(x_tip[mask_array], y_tip[mask_array], c='blue', marker='o')
 # 축 레이블 설정
 plt.xlabel('X Tip')
 plt.ylabel('Y Tip')
-plt.title('Scatter plot of points within tip_boundary')
+plt.title('tip')
 
 # 축의 비율을 동일하게 설정하여 정사각형 모양의 그래프를 생성
 plt.gca().set_aspect('equal', adjustable='box')
