@@ -19,16 +19,19 @@ def potential_sum(tip_boundary, move_x, move_y):
     # 2차원 격자 형태의 x좌표와 y좌표 배열 생성
     x_tip, y_tip = np.meshgrid(x_values, y_values)
 
+    # 조건 계산
+    condition_array = np.sqrt(x_tip**2 + y_tip**2)
+
+    # mask_array: 조건에 맞으면 True, 아니면 False
+    mask_array = condition_array <= tip_boundary * tip_lattice
+
     # move_x와 move_y를 각각 x_tip과 y_tip에 더함
     x_tip = x_tip + move_x
     y_tip = y_tip + move_y
 
-    # 원점으로부터 거리를 계산하여 tip_boundary보다 큰 좌표는 값을 0으로 설정
-    condition_array = np.sqrt(x_tip**2 + y_tip**2)
-
-    # condition_array가 tip_boundary보다 작은 경우 계산
-    potential_values = np.where(condition_array <= tip_boundary,
-                                potential_at_xy(x_tip, y_tip, sample_lattice), 0)
+    # mask_array가 True인 경우에만 potential 계산
+    potential_values = np.zeros_like(x_tip)  # 초기화
+    potential_values[mask_array] = potential_at_xy(x_tip[mask_array], y_tip[mask_array], sample_lattice)
 
     # potential_values 배열의 모든 요소의 합을 구함
     total_potential_sum = np.sum(potential_values)
@@ -39,7 +42,7 @@ def potential_sum(tip_boundary, move_x, move_y):
 move_range = np.arange(0.0, 4.1, 0.01)
 
 # tip_boundary 범위를 설정
-tip_boundary_range = np.arange(0.1, 100, 4)
+tip_boundary_range = range(0, 50)
 
 max_min = []
 for tip_boundary in tqdm(tip_boundary_range, desc='progress bar'):
