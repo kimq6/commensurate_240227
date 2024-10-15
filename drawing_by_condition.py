@@ -13,7 +13,7 @@ y_values = np.arange(tip_boundary, -tip_boundary - 1, -1) * tip_lattice
 # 2차원 격자 형태의 x좌표와 y좌표 배열 생성
 x_tip, y_tip = np.meshgrid(x_values, y_values)
 
-# 원점으로부터 거리를 계산
+# 조건 계산
 condition_array = np.abs(x_tip) + np.abs(y_tip)
 
 # condition_array 값이 tip_boundary보다 작은 경우만 선택
