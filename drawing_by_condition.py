@@ -16,12 +16,12 @@ x_tip, y_tip = np.meshgrid(x_values, y_values)
 # 조건 계산
 condition_array = np.abs(x_tip) + np.abs(y_tip)
 
-# condition_array 값이 tip_boundary보다 작은 경우만 선택
-mask = condition_array <= tip_boundary
+# mask_array: 조건에 맞으면 True, 아니면 False
+mask_array = condition_array <= tip_boundary * tip_lattice
 
 # 그래프 그리기
 plt.figure(figsize=(8, 8))
-plt.scatter(x_tip[mask], y_tip[mask], c='blue', marker='o')
+plt.scatter(x_tip[mask_array], y_tip[mask_array], c='blue', marker='o')
 
 # 축 레이블 설정
 plt.xlabel('X Tip')
