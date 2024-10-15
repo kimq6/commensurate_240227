@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 # 초기 설정
-atom_lattice = 2  # atom_lattice 값 수정
-tip_lattice = 1.5 # tip_lattice 값 수정
-atom_limit = 50  # radius_multiple와 tip_lattice 곱보다 큰 숫자
-radiuses = np.arange(0, atom_limit, 0.1)  # 반지름을 1부터 n까지 변화시킬 예정, 원하는 반지름은 수정가능
+atom_lattice = 4  # atom_lattice 값 수정
+tip_lattice = 3.839 # tip_lattice 값 수정
+atom_limit = 200  # radius_multiple와 tip_lattice 곱보다 큰 숫자
+radiuses = np.arange(0, atom_limit, tip_lattice)  # 반지름을 1부터 n까지 변화시킬 예정, 원하는 반지름은 수정가능
 
 # 함수 정의
 def potential_at_xy(x, y, B, λ):
     return B * (np.cos(np.pi * 2 * x / λ) + np.cos(np.pi * 2 * y / λ))
 
 
-B = 1  # 적절한 B 값 설정
+B = 1/4  # 적절한 B 값 설정
 λ = atom_lattice
 
 potential_barrier = []  # 각 반경에서의 최대-최소 잠재 에너지를 저장할 리스트
@@ -35,7 +35,8 @@ for radius in tqdm(radiuses, desc='Calculating max-min potentials'):
             # radius 안에 속해 있는 원자에 대해 중심이 (0,0)에서 potential 합 구하고 초기화, (0,0.1)에서 합 구하고 초기화, ... (atom_lattice,atom_lattice)에서 합 구하고 초기화 용도
             potential_sum = 0.0
             for x, y in tip_base:
-                if np.sqrt((x) ** 2 + (y) ** 2) <= radius + 0.001:  # 만약 tip 원자가 반지름 안에 속해 있다면
+                limit = radius + 0.01
+                if np.abs(x) <= limit and np.abs(y) <= limit:  # 만약 tip 원자가 사각형 변의 반 안에 속해 있다면
                     potential_sum += potential_at_xy(x + x_move, y + y_move, B, λ)  # potential_sum에 해당 tip 원자의 potential을 더한다.
             potential_sums.append(potential_sum)  # potential_sums에 potential_sum을 추가한다.
     
@@ -54,6 +55,7 @@ threshold = 0.02  # 이 값보다 더 큰 변화인 경우
 large_change_indices = np.where(changes > threshold)[0]
 # 해당하는 radiuses 값 추출
 large_change_radiuses = [radiuses[i+1] for i in large_change_indices]
+print(potential_barrier)
 print(large_change_radiuses)
 
 # 그래프 그리기

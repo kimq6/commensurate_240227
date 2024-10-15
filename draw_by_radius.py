@@ -10,7 +10,7 @@ tip_lattice = 1.5
 atom_limit = 100  # 그냥 radius보다 충분히 큰 숫자
 # radius_multiple = 3
 # radius = tip_lattice * radius_multiple  # tip 원 반지름
-radius = 6
+radius = 20
 
 # atom 좌표 베이스
 atom_base = [x * s for s in (1, -1) for x in np.arange(atom_lattice / 2, atom_limit, atom_lattice)]
@@ -64,7 +64,6 @@ ax0.set_yticks(atom_base)
 
 # 그래프 확대
 ax_limit = (radius + atom_lattice) * 1.2
-ax_limit = 12
 ax0.set_xlim(-ax_limit, ax_limit)
 ax0.set_ylim(-ax_limit, ax_limit)
 ax0.set_aspect('equal')
