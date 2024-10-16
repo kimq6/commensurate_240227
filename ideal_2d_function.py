@@ -8,11 +8,11 @@ sample_lattice = 4.0
 tip_max = 300
 delta = 0.1
 
-# 격자 potential을 계산하는 함수
+# potential을 계산 함수
 def potential_at_xy(x, y, λ):
     return (np.cos(np.pi * 2 * x / λ) + np.cos(np.pi * 2 * y / λ))
 
-# tip_boundary = 크기, move_x, move_y는 변위, potential_sum을 반환하는 함수 where 안의 조건에 따라 모양을 바꿀 수 있다
+# tip_boundary = 크기, move_x, move_y는 변위, potential_sum을 반환하는 함수. 조건 계산과 mask_array의 조건에 따라 모양을 바꿀 수 있다
 def potential_sum(tip_boundary, move_x, move_y):
     # 1차원 x좌표와 y좌표 배열 생성
     x_values = np.arange(-tip_boundary, tip_boundary + tip_lattice, tip_lattice)
