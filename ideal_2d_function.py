@@ -5,6 +5,8 @@ from tqdm import tqdm
 # 변수 (tip_lattice)
 tip_lattice = 3.8
 sample_lattice = 4.0
+tip_max = 300
+delta = 0.1
 
 # 격자 potential을 계산하는 함수
 def potential_at_xy(x, y, λ):
@@ -20,11 +22,11 @@ def potential_sum(tip_boundary, move_x, move_y):
     x_tip, y_tip = np.meshgrid(x_values, y_values)
 
     # 조건 계산
-    condition_array = np.sqrt(x_tip**2 + y_tip**2)  # 원
-    # condition_array = np.abs(x_tip) + np.abs(y_tip)  # 마름모
+    # condition_array = np.sqrt(x_tip**2 + y_tip**2)  # 원
+    condition_array = np.abs(x_tip) + np.abs(y_tip)  # 마름모
 
     # mask_array: 조건에 맞으면 True, 아니면 False
-    mask_array = condition_array <= tip_boundary  # 원이나 마름모
+    mask_array = condition_array <= tip_boundary + 0.01  # 원이나 마름모
     # mask_array = np.ones_like(x_tip, dtype=bool)  # 네모
 
     # move_x와 move_y를 각각 x_tip과 y_tip에 더함
@@ -41,10 +43,10 @@ def potential_sum(tip_boundary, move_x, move_y):
     return total_potential_sum
 
 # move_x, move_y 범위를 설정
-move_range = np.arange(0.0, sample_lattice, 0.1)
+move_range = np.arange(0.0, sample_lattice, delta)
 
 # tip_boundary 범위를 설정
-tip_boundary_range = np.arange(0.0, 500, tip_lattice)
+tip_boundary_range = np.arange(0.0, tip_max, tip_lattice)
 
 max_min = []
 for tip_boundary in tqdm(tip_boundary_range, desc='progress bar'):
@@ -57,10 +59,20 @@ for tip_boundary in tqdm(tip_boundary_range, desc='progress bar'):
 print(max_min)
 
 # 그래프 그리기
-plt.figure() 
-plt.plot(tip_boundary_range, max_min, marker='o')
-plt.xlabel('Tip Boundary')
-plt.ylabel('Max-Min Potential Sum')
-plt.title('Max-Min Potential Sum vs Tip Boundary')
+fig, ax1 = plt.subplots()
+
+x_ = range(1, len(tip_boundary_range) + 1)
+ax1.plot(range(1, len(tip_boundary_range) + 1), max_min, marker='o', color='b')
+ax1.set_xlabel('Tip index\nTip boundary')
+ax1.set_ylabel('Max-Min Potential Sum', color='b')
+ax1.tick_params(axis='y', labelcolor='b')
+
+# x축 눈금과 레이블 설정
+x_ticks = np.linspace(x_[0], x_[-1], 10)
+ax1.set_xticks(x_ticks)
+ax1.set_xticklabels([f'{x:.0f}\n{x * tip_lattice:.2f}' for x in x_ticks])
+
+plt.title(f'tip lattice = {tip_lattice}Å, sample lattice = {sample_lattice}Å\ndelta = {delta}Å, tip max = {tip_max}Å')
 plt.grid(True)
+plt.tight_layout()
 plt.show()
